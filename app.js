@@ -170,6 +170,8 @@ function callEverything() {
   var subcategoryRandomNumber = Math.round(Math.random() * (subcategoryArray.length - 1));
   var dateActivitySubCategory = subcategoryArray[subcategoryRandomNumber];
 
+  console.log(dateActivityBaseURL)
+
   if (dateSaveCheckbox.checked === false) {
     return dateHappily();
   } else if (dateSaveCheckbox.checked === true && restSaveCheckbox.checked === true && dessertSaveCheckbox.checked === true) {
