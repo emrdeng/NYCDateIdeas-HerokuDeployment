@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Need Some NYC Date Ideas?</title>
+    <!-- CSS Stylesheet -->
+    <link rel="stylesheet" href="styles.css">
+    <!-- Font Awesome CDN: -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha512-1sCRPdkRXhBV2PBLUdRb4tMg1w2YPf37qatUFeS7zlBy7jJI8Lf4VHwWfZZfpXtYSLy85pkm9GaYVYMfw5BC1A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Pacifico&family=Passion+One:wght@400;700;900&family=Poppins:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  </head>
+
+  <body>
+      <div class="bg">
+        <!-- This is the image container -->
+        <!-- Below is the div container for the title and description -->
+        <div class="leftmost-container">
+          <div class="title">
+            PLAN YOUR PERFECT NYC DATE
+          </div>
+          <br>
+          <!-- <div class="love-quote">
+            <blockquote>
+              "You should be kissed, and often, and by someone who knows how."
+            </blockquote>
+            <cite>- Gone With the Wind</cite>
+          </div> -->
+          <div class="description-div">
+            <p>Stand out in a city of 8 million people. Leave a lasting impression on your date with unique date activities and restaurants with delicious food.</p>
+          </div>
+          <div class="calendar-div">
+            <label class="leftmost-div-labels date-title">&nbsp;&nbsp;Plan Your Date Down to the Weather!</label>
+            <br>
+            <input type="date" id="calendar" min="" max="">
+            <select id="weather-unit">
+              <option class="measurement-unit-option" value = "Fahrenheit">Fahrenheit</option>
+              <option class="measurement-unit-option" value = "Celsius">Celsius</option>
+            </select>
+          </div>
+          <br>
+          <div class="cuisine-info">
+            <label class="leftmost-div-labels" for="cusine">&nbsp;&nbsp;What cuisine would you like?</label>
+            <br>
+            <form autocomplete="off">
+              <input id="cuisine-selection" type="text" name="" placeholder="Any">
+            </form>
+            <ul class="list">
+              <!-- This is where the autocomplete list will go. -->
+            </ul>
+            <!-- <select id="cuisine-selection" placeholder="Any">
+              <option class="cuisine-options">Any</option>
+              <option class="cuisine-options">American</option>
+              <option class="cuisine-options">Chinese</option>
+              <option class="cuisine-options">Indian</option>
+            </select> -->
+            <br>
+            <label class="leftmost-div-labels" for="price">&nbsp;&nbsp;&nbsp;&nbsp;Price Range&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Extra chat time!</label>
+            <br>
+            <select id="price-range" placeholder="Any">
+              <option class="cuisine-options">Any</option>
+              <option class="cuisine-options">$</option>
+              <option class="cuisine-options">$$ - $$$</option>
+              <option class="cuisine-options">$$$$</option>
+            </select>
+            <select id="extra-chat-time">
+              <option class="cuisine-options">Any</option>
+              <option class="cuisine-options">None</option>
+              <option class="cuisine-options">Bars & Pubs</option>
+              <option class="cuisine-options">Coffee & Tea</option>
+              <option class="cuisine-options">Dessert</option>
+            </select>
+          </div>
+          <br>
+          <!-- <label for="extra">Dietary Restrictions</label> -->
+            <!-- <select id="diet-restrictions" placeholder="Dietary restrictions">
+              <option class="cuisine-options">None</option>
+              <option class="cuisine-options">Vegetarian Friendly</option>
+              <option class="cuisine-options">Vegan Options</option>
+              <option class="cuisine-options">Gluten Free Options</option>
+            </select> -->
+          <br>
+          <div class="submit-div">
+            <button type="submit" class= "submit-btn" name="button">Submit <i class="fa-solid fa-heart heart-btn"></i></button>
+          </div>
+        </div>
+
+        <!-- This is the right-most div container which contains the date activities and restaurant divs -->
+        <div class="rightmost-container">
+          <div class="grid-item weather-div">
+            <div class="weather-summary">
+              <p class ="weather-date"></p>
+              <img class = "weather-icon-pic" src="https://www.weatherbit.io/static/img/icons/c02d.png" alt="">
+              <p class="temperature"></p>
+              <p class = "weather-description"></p>
+            </div>
+            <div class="weather-details">
+              <div class="weather-details-container-grid">
+                <div class="weather-details-grid"><p class = "high-temp">High temp</p></div>
+                <div class="weather-details-grid weather-numbers high-temp-number"></div>
+                <div class="weather-details-grid"><p class = "low-temp">Low temp</p></div>
+                <div class="weather-details-grid weather-numbers low-temp-number"></div>
+                <!-- <div class="weather-details-grid"><p class = "rain-percentage">Chance of rain</p></div>
+                <div class="weather-details-grid weather-numbers rain-percentage-number"></div> -->
+                <div class="weather-details-grid"><p class = "avg-humidity">Avg Humidity</p></div>
+                <div class="weather-details-grid weather-numbers avg-humidity-number"></div>
+                <!-- <div class="weather-details-grid"><p class = "accum-snowfall">Accum. snowfall</p></div>
+                <div class="weather-details-grid weather-numbers accum-snowfall-number"></div> -->
+              </div>
+
+            </div>
+          </div>
+
+          <div class="grid-item date-activity-div">
+            <div class="date-activity-title">
+              <p class ="date-activity-title-paragraph"></p>
+            </div>
+            <div class="date-activity-picture">
+              <div class="date-activity-div-resized">
+                <img class="date-activity-pic" src="" alt="">
+                <br>
+                <div class="picture-error date-activity-pic-error">
+                  <!-- THIS WILL BE THE PLACE FOR THE NO PICTURE RESULT! -->
+                  <p>No pictures available. Please visit their website and review page for more details.</p>
+                </div>
+              </div>
+              <div class="date-activity-links">
+                <p class="date-activity-links-paragraph"><a href="" target="_blank" class="date-activity-link">Website</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="" target="_blank" class="date-activity-reviews">Reviews</a></p>
+              </div>
+            </div>
+            <br>
+            <div class="date-activity-above-description-div">
+              <div class="date-activity-address float-div">
+                <p class="date-activity-phone"></p>
+                <p class="date-activity-street-1"></p>
+                <p class="date-activity-city"></p>
+              </div>
+              <div class="date-activity-details-div float-div">
+                <div class="date-activity-details-container-grid">
+                  <div class="date-activity-details-grid dadg3">Rating</div>
+                  <div class="date-activity-details-grid dadg4"></div>
+                  <!-- <div class="restaurant-details-grid"><a href="" target="_blank">Restaurant website</a></div>
+                  <div class="restaurant-details-grid"><a href="" target="_blank">TripAdvisor reviews</a></div> -->
+                </div>
+              </div>
+            </div>
+            <br>
+            <div class="div-holding-the-date-activity-description">
+              <div class="date-activity-description">
+                <div class="date-activity-description-paragraph-div">
+                  <p class="date-activity-description-paragraph"></p>
+                </div>
+              </div>
+            </div>
+            <div class="save-div">
+              <div class="checkbox-div">
+                  <input class="save-checkbox date-activity-save-checkbox" type="checkbox">
+                  <label for="date-activity-save-checkbox" class="checkbox-label">&nbsp;&nbsp;&nbsp;Save this date activity?</label>
+              </div>
+            </div>
+            <!-- <div class="date-activity-randomize">
+              <div class="date-activity-random-button-div">
+                <button type="submit" class="date-activity-random-button">Randomize!</button>
+              </div>
+            </div> -->
+          </div> <!--This is the end of the date activity divider-->
+
+          <div class="grid-item rest-error-page">
+            <div class="close-error-page-div">
+              <i class="fa-sharp fa-solid fa-circle-xmark fa-2xl rest-close-button"></i>
+            </div>
+            <div class="close-error-paragraph-div">
+              <p class="error-paragraph">No restaurants found within walking distance of the date activity.</p>
+              <br>
+              <p class="error-paragraph">Click "X" on the top right corner to exit and see a restaurant that is not within walking distance of the date activity.</p>
+            </div>
+          </div>
+
+          <div class="grid-item restaurant-div">
+            <div class="restaurant-title">
+              <p class ="rest-title"></p>
+            </div>
+            <div class="restaurant-picture">
+              <div class="restaurant-picture-div-resized">
+                <img class="rest-pic" src="" alt="">
+                <br>
+                <div class="picture-error rest-pic-error">
+                  <!-- THIS WILL BE THE PLACE FOR THE NO PICTURE RESULT! -->
+                  <p>No pictures available. Please visit their website and review page for more details.</p>
+                </div>
+              </div>
+              <div class="restaurant-links">
+                <p class="rest-links-paragraph"><a href="" target="_blank" class="rest-link">Website</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="" target="_blank" class="rest-reviews">Reviews</a></p>
+              </div>
+            </div>
+            <br>
+            <div class="restaurant-above-description-div">
+              <div class="restaurant-address float-div">
+                <p class="rest-phone"></p>
+                <p class="rest-street-1"></p>
+                <p class="rest-city"></p>
+              </div>
+              <div class="restaurant-details-div float-div">
+                <div class="restaurant-details-container-grid">
+                  <div class="restaurant-details-grid rdg1">Price</div>
+                  <div class="restaurant-details-grid rdg2"></div>
+                  <div class="restaurant-details-grid rdg3">Rating</div>
+                  <div class="restaurant-details-grid rdg4"></div>
+                  <!-- <div class="restaurant-details-grid"><a href="" target="_blank">Restaurant website</a></div>
+                  <div class="restaurant-details-grid"><a href="" target="_blank">TripAdvisor reviews</a></div> -->
+                </div>
+              </div>
+            </div>
+            <br>
+            <div class="div-holding-the-restaurant-description">
+              <div class="restaurant-description">
+                <div class="restaurant-description-paragraph-div">
+                  <p class="restaurant-description-paragraph"></p>
+                </div>
+              </div>
+            </div>
+            <div class="save-div">
+              <div class="checkbox-div">
+                  <input class="rest-walking-checkbox" type="checkbox" checked>
+                  <label for="rest-walking-checkbox" class="checkbox-label">&nbsp;&nbsp;&nbsp;Walking distance from date activity?</label>
+              </div>
+              <div class="walking-div">
+                <input class="save-checkbox rest-save-checkbox" type="checkbox">
+                <label for="rest-save-checkbox" class="checkbox-label">&nbsp;&nbsp;&nbsp;Save this restaurant?</label>
+              </div>
+            </div>
+            <!-- <div class="restaurant-randomize">
+              <div class="restaurant-random-button-div">
+                <button type="submit" class="restaurant-random-button">Randomize!</button>
+              </div>
+            </div> -->
+          </div> <!-- This is the end of the restaurant-div -->
+
+          <div class="grid-item dessert-error-page">
+            <div class="close-error-page-div">
+              <i class="fa-sharp fa-solid fa-circle-xmark fa-2xl dessert-close-button"></i>
+            </div>
+            <div class="close-error-paragraph-div">
+              <p class="error-paragraph">No locations found within walking distance of restaurant.</p>
+              <br>
+              <p class="error-paragraph">Click "X" on the top right corner to exit and see a location that is not within walking distance of the restaurant.</p>
+            </div>
+          </div>
+
+          <div class="grid-item dessert-div">
+            <div class="dessert-title">
+              <p class ="dessert-title-paragraph"></p>
+            </div>
+            <div class="dessert-picture">
+              <div class="dessert-picture-div-resized">
+                <img class="dessert-pic" src="" alt="">
+                <br>
+                <div class="picture-error dessert-pic-error">
+                  <!-- THIS WILL BE THE PLACE FOR THE NO PICTURE RESULT! -->
+                  <p>No pictures available. Please visit their website and review page for more details.</p>
+                </div>
+              </div>
+              <div class="dessert-links">
+                <p class="dessert-links"><a href="" target="_blank" class="dessert-link">Website</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="" target="_blank" class="dessert-reviews">Reviews</a></p>
+              </div>
+            </div>
+            <br>
+            <div class="dessert-above-description-div">
+              <div class="dessert-address float-div">
+                <p class="dessert-phone"></p>
+                <p class="dessert-street-1"></p>
+                <p class="dessert-city"></p>
+              </div>
+              <div class="dessert-details-div float-div">
+                <div class="dessert-details-container-grid">
+                  <div class="dessert-details-grid ddg1">Price</div>
+                  <div class="dessert-details-grid ddg2"></div>
+                  <div class="dessert-details-grid ddg3">Rating</div>
+                  <div class="dessert-details-grid ddg4"></div>
+                  <!-- <div class="restaurant-details-grid"><a href="" target="_blank">Restaurant website</a></div>
+                  <div class="restaurant-details-grid"><a href="" target="_blank">TripAdvisor reviews</a></div> -->
+                </div>
+              </div>
+            </div>
+            <br>
+            <div class="div-holding-the-dessert-description">
+              <div class="dessert-description">
+                <div class="dessert-description-paragraph-div">
+                  <p class="dessert-description-paragraph"></p>
+                </div>
+              </div>
+            </div>
+            <div class="save-div">
+              <div class="checkbox-div">
+                <input class="dessert-walking-checkbox" type="checkbox" checked>
+                <label for="dessert-walking-checkbox" class="checkbox-label">&nbsp;&nbsp;&nbsp;Walking distance from restaurant?</label>
+              </div>
+              <div class="walking-div">
+                <input class="save-checkbox dessert-save-checkbox" type="checkbox">
+                <label for="dessert-save-checkbox" class="checkbox-label">&nbsp;&nbsp;&nbsp;Save this place?</label>
+              </div>
+            </div>
+            <!-- <div class="dessert-randomize">
+              <div class="dessert-random-button-div">
+                <button type="submit" class="dessert-random-button">Randomize!</button>
+              </div>
+            </div> -->
+          </div> <!--This is the end of the dessert div -->
+
+        </div> <!--This is the end of the rightmost container -->
+      </div> <!--This is the end of the bg container -->
+    <script src="dist/bundle.js" charset="utf-8"></script>
+  </body>
+</html>

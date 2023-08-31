@@ -1,0 +1,28 @@
+{
+  "name": "date-ajax",
+  "version": "1.0.0",
+  "description": "",
+  "main": "ajax.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "webpack --watch",
+    "start:server": "nodemon ajax.js",
+    "start": "concurrently \"npm:watch\" \"npm:start:server\"",
+    "build": "webpack --mode production",
+    "heroku-postbuild": "webpack"
+  },
+  "author": "Emily Deng",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "express": "^4.18.1",
+    "nodemon": "^2.0.19"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.1",
+    "dotenv-webpack": "^8.0.1",
+    "webpack": "^5.77.0",
+    "webpack-cli": "^5.0.1",
+    "webpack-dev-server": "^4.13.1"
+  }
+}
