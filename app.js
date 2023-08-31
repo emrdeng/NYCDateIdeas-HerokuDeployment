@@ -1,3 +1,4 @@
+console.log("App.js is running!")
 // Identifying the elements:
 const dateControl = document.querySelector("input[type=date]");
 const submitBtn = document.querySelector(".submit-btn");
