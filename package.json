@@ -6,8 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "webpack --watch",
-    "start:server": "nodemon ajax.js",
-    "start": "concurrently \"npm:watch\" \"npm:start:server\"",
+    "start:server": "node ajax.js",
+    "start": "node ajax.js",
     "build": "webpack --mode production",
     "heroku-postbuild": "webpack"
   },
