@@ -17,7 +17,7 @@ font-family: 'Poppins', sans-serif; */
 }
 
 .bg {
-  background-image: url("./images/NYC-illustration.jpg");
+  background-image: url("/images/NYC-illustration.jpg");
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center center;
