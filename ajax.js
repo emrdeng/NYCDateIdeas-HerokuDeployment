@@ -216,7 +216,9 @@ app.get('/fetch-data', async (req, res) => {
           results.dessert = dessertData;
       }
 
-      console.log(JSON.stringify(results))
+      console.log(JSON.stringify(results.dateActivity))
+      console.log(JSON.stringify(results.restaurant))
+      console.log(JSON.stringify(results.dessert))
       res.json(results);
 
   } catch (error) {
