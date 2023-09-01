@@ -1,11 +1,7 @@
-console.log("App.js is running!")
 // Identifying the elements:
 const dateControl = document.querySelector("input[type=date]");
 const submitBtn = document.querySelector(".submit-btn");
 const heartBtn = document.querySelector(".heart-btn");
-
-const restCloseBtn = document.querySelector(".rest-close-button");
-const dessertCloseBtn = document.querySelector(".dessert-close-button");
 
 const dateSaveCheckbox = document.querySelector(".date-activity-save-checkbox");
 const restSaveCheckbox = document.querySelector(".rest-save-checkbox");
@@ -15,7 +11,6 @@ const restWalkDistance = document.querySelector(".rest-walking-checkbox");
 const dessertWalkDistance = document.querySelector(".dessert-walking-checkbox");
 
 // EVENT LISTENERS FOR THE SUBMIT BUTTON:
-// submitBtn.addEventListener("click", callEverything);
 submitBtn.addEventListener("click", function(event) {
   event.preventDefault();
   callEverything();
@@ -59,7 +54,6 @@ cuisineSearch.addEventListener("focus", fetchData, { once: true });
 let cuisineNames;
 
 function fetchData() {
-  console.log("fetchData is running!")
   fetch("https://nyc-date-planner-224c86480c8a.herokuapp.com/cuisineList")
       .then(response => response.json())
       .then(data => {
@@ -182,7 +176,6 @@ function callEverything(){
       //////////////// Handling dateActivity data ////////////////////////
       if (data.dateActivity && data.dateActivity !== null) {
         dateActivityData = data.dateActivity;
-        console.log(`dateActivity: ${dateActivityData}`);
         dateActivityFrontEndDisplay()
       } else {
         console.log('dateActivity is missing');
@@ -191,12 +184,10 @@ function callEverything(){
        ////////////////  Handling restaurant data ////////////////////////
        if (data.restaurant && data.restaurant !== null) {
         restaurantData = data.restaurant;
-        console.log(`restaurantData: ${restaurantData}`);
         document.querySelector(".restaurant-div").style.display = "";
         document.querySelector(".rest-error-page").style.display = "none";
         restaurantFrontEndDisplay()
       } else if (data.restaurant === null) {
-        console.log('restaurantData is null');
         document.querySelector(".restaurant-div").style.display = "none";
         document.querySelector(".rest-error-page").style.display = "block";
         if (userSubmittedExtraChatTime === "None" && userSubmittedDate === "") {
@@ -219,20 +210,16 @@ function callEverything(){
       //////////////// Handling dessert data ////////////////////////
       if (data.dessert && data.dessert !== null) {
         dessertData = data.dessert;
-        console.log(`dessertData: ${dessertData}`);
         document.querySelector(".dessert-error-page").style.display = "none";
         document.querySelector(".dessert-div").style.display = "";
         dessertFrontEndDisplay();
       } else if (data.dessert === null) {
-        console.log('dessertData is null');
         document.querySelector(".dessert-div").style.display = "none";
         document.querySelector(".dessert-error-page").style.display = "block";
       } else {
         console.log('dessertData is missing');
-        // Additional processing for case 3
       }
-
-      updateFrontendDisplay();
+      
     })
     .catch(error => {
       console.error('Error fetching data:', error);
@@ -474,8 +461,6 @@ function callTheWeather() {
     .catch(error => console.error("Error fetching weather data:", error));
 
   function weatherCallFunction(weatherData) {
-      console.log(weatherData)
-
       // WEATHER SUMMARY DATA
       var weatherDataDate = new Date(weatherData.dt*1000);
       var weatherDate = weatherDataDate.toLocaleString("en-US", {

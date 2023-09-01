@@ -157,8 +157,6 @@ app.get('/fetch-data', async (req, res) => {
       }
 
       if (dessertSave === "false"&& restTagCategory  !== "false") {
-        console.log(`dessertSave is ${dessertSave}`)
-        console.log(`restTagCategory is ${restTagCategory}`)
           const dessertData = await fetchDessertAPI(dateActivityLocation, restLocation, pricesRestaurants, restTagCategory);
           results.dessert = dessertData;
       }
@@ -182,8 +180,6 @@ async function fetchDateActivity(restWalkDistance){
 
   var dateActivityFetchURL = dateActivityBaseURL + parameterLocationId + locationId + and + parameterSort + sort + and + parameterSubCategory + dateActivitySubCategory + and + parameterCurrency + currency + and + parameterUnit + lunit + and + parameterLimit + limit + and + parameterLang + lang + and + parameterRestAPIKey + restAPIKey + and + parameterMinRating + minRating + and + parameterOffset + dateActivityRandomOffsetNumber;
 
-  console.log(`dateActivityFetchURL: ${dateActivityFetchURL}`)
-
   var dateActivityLocation;
 
   try{
@@ -191,7 +187,6 @@ async function fetchDateActivity(restWalkDistance){
     const data = await response.json();
 
     if (data.paging.results === "0") {
-      console.log("refetching date activity")
       return fetchDateActivity();  // Function to refetch
     }
 
@@ -251,14 +246,11 @@ async function fetchRestaurantAPI(dateActivityLocation, pricesRestaurants, cuisi
 
   var restaurantFetchURL = restBaseURL + parameterLocationId + dateActivityLocation + and + parameterCurrency + currency + and + parameterUnit + lunit + and + parameterLimit + limit + and + parameterLang + lang + and + parameterRestAPIKey + restAPIKey + and + parameterMinRating + minRating + and + parameterRestPrice + pricesRestaurants + and + parameterCombinedFoodKey + cuisineSearchKey;
 
-  console.log(`restaurantFetchURL: ${restaurantFetchURL}`)
-
   try{
     const response = await fetch(restaurantFetchURL);
     const data = await response.json();
 
     if (data.paging.results === "0") {
-      console.log("restaurant data.paging.results === 0")
       return {
         restData: null,
         location: "60763"
@@ -267,9 +259,8 @@ async function fetchRestaurantAPI(dateActivityLocation, pricesRestaurants, cuisi
 
     // Ensure we have valid data to pick from
     let restActualArrayResults = data.data.length;
-    console.log(`restActualArrayResults is: ${restActualArrayResults}`)
     let firstPageRandomNumber = Math.round(Math.random() * (restActualArrayResults - 1));
-    console.log(`firstPageRandomNumber is: ${firstPageRandomNumber}`)
+
     if (Object.keys(data.data[firstPageRandomNumber]).length < 30) {
       if (data.data[firstPageRandomNumber + 1] == null || data.data[firstPageRandomNumber + 1] == undefined) {
         firstPageRandomNumber = firstPageRandomNumber - 1;
@@ -323,14 +314,11 @@ async function fetchDessertAPI(dateActivityLocation, restLocation, pricesRestaur
 
   var dessertFetchURL = restBaseURL + parameterLocationId + restLocation + and + parameterCurrency + currency + and + parameterUnit + lunit + and + parameterLimit + limit + and + parameterLang + lang + and + parameterRestAPIKey + restAPIKey + and + parameterMinRating + minRating + and + parameterRestPrice + pricesRestaurants + and + parameterRestTag + restTagCategory;
 
-  console.log(`dessertFetchURL: ${dessertFetchURL}`)
-
   try{
     const response = await fetch(dessertFetchURL);
     const data = await response.json();
 
     if (data.paging.results === "0") {
-      console.log("dessert data.paging.results === 0")
       return null;  
     }
 
