@@ -50,14 +50,14 @@ var cuisineSearch = document.getElementById("cuisine-selection");
 // Initial event listener to fetch the data
 cuisineSearch.addEventListener("focus", fetchData, { once: true });
 
+let cuisineNames;
+
 function fetchData() {
   console.log("fetchData is running!")
-  fetch("https://nyc-date-planner-224c86480c8a.herokuapp.com/env-vars")
+  fetch("https://nyc-date-planner-224c86480c8a.herokuapp.com/cuisineList")
       .then(response => response.json())
       .then(data => {
-          cuisineNames = data;
-          console.log(`cusineNamesJSON environment variable is: ${JSON.stringify(cuisineNames)}`)
-          console.log(`cusineNamesJSON environment variable is: ${cuisineNames.CUISINENAMESJSON}`)
+        cuisineNames = data;
           attachAutocomplete(cuisineNames.CUISINENAMESJSON);
       });
 }
@@ -1135,141 +1135,122 @@ function callTheWeather() {
   // This identifies what the user submitted as the weather measurement.
   var measurementControl = document.getElementById("weather-unit").value;
   // This changes the Weather API URL depending on the measurement unit selected.
-  let weatherURL;
+  let endpoint;
+  let measurement;
   let callbackFunction;
 
   if (userSubmittedDate === ""){
     document.querySelector(".weather-div").style.display = "none";
+    return;
   } else if (formattedTodaysDate === userSubmittedDate) {
     document.querySelector(".weather-div").style.removeProperty("display");
-    weatherURL = measurementControl === "Celsius" ? process.env.WEATHERURLCELSIUS : process.env.WEATHERURLFARENHEIT;
+    endpoint = "/current-weather";
+    measurement = measurementControl === "Celsius" ? "metric" : "imperial";
     callbackFunction = weatherCallFunction;
   } else {
     document.querySelector(".weather-div").style.removeProperty("display");
-    weatherURL = measurementControl === "Celsius" ? process.env.WEATHERFORECASTURLCELSIUS : process.env.WEATHERFORECASTURLFARENHEIT;
+    endpoint = "/forecast-weather";
+    measurement = measurementControl === "Celsius" ? "metric" : "imperial";
     callbackFunction = forecastWeatherCallFunction;
   }
 
-  const xhr = new XMLHttpRequest();
-  xhr.open("GET", weatherURL, true);
-  xhr.addEventListener("readystatechange", callbackFunction);
+  fetch(`${endpoint}&units=${measurement}`)
+    .then(response => response.json())
+    .then(data => callbackFunction(data))
+    .catch(error => console.error("Error fetching weather data:", error));
 
-  function weatherCallFunction() {
-    if(this.readyState === this.DONE){
-      var weatherData = JSON.parse(this.responseText);
+  function weatherCallFunction(weatherData) {
       console.log(weatherData)
 
-        // WEATHER SUMMARY DATA
-        var weatherDataDate = new Date(weatherData.dt*1000);
-        var weatherDate = weatherDataDate.toLocaleString("en-US", {
-          dateStyle: "medium"
-        });
-
-        document.querySelector(".weather-date").innerHTML = weatherDate;
-        var weatherTemp = Math.round(weatherData.main.temp);
-        if (measurementControl === "Celsius") {
-          document.querySelector(".temperature").innerHTML = weatherTemp + "&#176;C";
-        } else {
-          document.querySelector(".temperature").innerHTML = weatherTemp + "&#176;F";
-        }
-
-        // WEATHER IMAGE DATA
-        var weatherCode = weatherData.weather[0].id;
-        if (weatherCode >= 800 && weatherCode <= 803) {
-          document.querySelector(".weather-div").style.backgroundImage = "url('images/blue-sky.jpg')"
-        } else if (weatherCode < 790 || weatherCode === 804) {
-          document.querySelector(".weather-div").style.backgroundImage = "url('images/rainy-sky-2.jpg')"
-        }
-
-        var weatherIcon = weatherData.weather[0].icon;
-        var weatherIconURL = "https://openweathermap.org/img/wn/" + weatherIcon + "@2x.png"
-        var icon = document.querySelector(".weather-icon-pic");
-        icon.src = weatherIconURL
-
-        // WEATHER SUMMARY DATA CONTINUED
-        var weatherDescription = weatherData.weather[0].description;
-        document.querySelector(".weather-description").innerHTML = weatherDescription;
-
-        // WEATHER DETAILS DATA
-        var highTemp = Math.round(weatherData.main.temp_max);
-        var lowTemp = Math.round(weatherData.main.temp_min);
-
-        if (measurementControl === "Celsius") {
-          document.querySelector(".high-temp-number").innerHTML = highTemp + "&#176;C";
-          document.querySelector(".low-temp-number").innerHTML = lowTemp + "&#176;C";
-        } else {
-          document.querySelector(".high-temp-number").innerHTML = highTemp + "&#176;F";
-          document.querySelector(".low-temp-number").innerHTML = lowTemp + "&#176;F";
-        }
-
-        var averageHumidity = Math.round(weatherData.main.humidity);
-        document.querySelector(".avg-humidity-number").innerHTML = averageHumidity + "&#37;";
-
-    }; //End of the if statement which determines ready state for the weather function.
+      // WEATHER SUMMARY DATA
+      var weatherDataDate = new Date(weatherData.dt*1000);
+      var weatherDate = weatherDataDate.toLocaleString("en-US", {
+        dateStyle: "medium"
+      });
+      document.querySelector(".weather-date").innerHTML = weatherDate;
+      var weatherTemp = Math.round(weatherData.main.temp);
+      if (measurementControl === "Celsius") {
+        document.querySelector(".temperature").innerHTML = weatherTemp + "&#176;C";
+      } else {
+        document.querySelector(".temperature").innerHTML = weatherTemp + "&#176;F";
+      }
+      // WEATHER IMAGE DATA
+      var weatherCode = weatherData.weather[0].id;
+      if (weatherCode >= 800 && weatherCode <= 803) {
+        document.querySelector(".weather-div").style.backgroundImage = "url('images/blue-sky.jpg')"
+      } else if (weatherCode < 790 || weatherCode === 804) {
+        document.querySelector(".weather-div").style.backgroundImage = "url('images/rainy-sky-2.jpg')"
+      }
+      var weatherIcon = weatherData.weather[0].icon;
+      var weatherIconURL = "https://openweathermap.org/img/wn/" + weatherIcon + "@2x.png"
+      var icon = document.querySelector(".weather-icon-pic");
+      icon.src = weatherIconURL
+      // WEATHER SUMMARY DATA CONTINUED
+      var weatherDescription = weatherData.weather[0].description;
+      document.querySelector(".weather-description").innerHTML = weatherDescription;
+      // WEATHER DETAILS DATA
+      var highTemp = Math.round(weatherData.main.temp_max);
+      var lowTemp = Math.round(weatherData.main.temp_min);
+      if (measurementControl === "Celsius") {
+        document.querySelector(".high-temp-number").innerHTML = highTemp + "&#176;C";
+        document.querySelector(".low-temp-number").innerHTML = lowTemp + "&#176;C";
+      } else {
+        document.querySelector(".high-temp-number").innerHTML = highTemp + "&#176;F";
+        document.querySelector(".low-temp-number").innerHTML = lowTemp + "&#176;F";
+      }
+      var averageHumidity = Math.round(weatherData.main.humidity);
+      document.querySelector(".avg-humidity-number").innerHTML = averageHumidity + "&#37;";
   }; //This closes the weatherCallFunction().
 
   function forecastWeatherCallFunction(){
-    if(this.readyState === this.DONE){
-      var weatherData = JSON.parse(this.responseText);
 
-      var searchDate = userSubmittedDate + " 12:00:00"
-
-      let matchedItem;
-
-      for(let i = 0; i < weatherData.list.length; i++){
-        if(weatherData.list[i].dt_txt === searchDate){
-          matchedItem = weatherData.list[i]
-        }
+    var searchDate = userSubmittedDate + " 12:00:00"
+    let matchedItem;
+    for(let i = 0; i < weatherData.list.length; i++){
+      if(weatherData.list[i].dt_txt === searchDate){
+        matchedItem = weatherData.list[i]
       }
+    }
+      // WEATHER SUMMARY DATA
+      var weatherDataDate = new Date(matchedItem.dt*1000);
+      var weatherDate = weatherDataDate.toLocaleString("en-US", {
+        dateStyle: "medium"
+      });
+      document.querySelector(".weather-date").innerHTML = weatherDate;
+      var weatherTemp = Math.round(matchedItem.main.temp);
+      if (measurementControl === "Celsius") {
+        document.querySelector(".temperature").innerHTML = weatherTemp + "&#176;C";
+      } else {
+        document.querySelector(".temperature").innerHTML = weatherTemp + "&#176;F";
+      }
+      // WEATHER IMAGE DATA
+      var weatherCode = matchedItem.weather[0].id;
+      if (weatherCode >= 800 && weatherCode <= 803) {
+        document.querySelector(".weather-div").style.backgroundImage = "url('images/blue-sky.jpg')"
+      } else if (weatherCode < 790 || weatherCode === 804) {
+        document.querySelector(".weather-div").style.backgroundImage = "url('images/rainy-sky-2.jpg')"
+      }
+      var weatherIcon = matchedItem.weather[0].icon;
+      var weatherIconURL = "https://openweathermap.org/img/wn/" + weatherIcon + "@2x.png"
+      var icon = document.querySelector(".weather-icon-pic");
+      icon.src = weatherIconURL
+      // WEATHER SUMMARY DATA CONTINUED
+      var weatherDescription = matchedItem.weather[0].description;
+      document.querySelector(".weather-description").innerHTML = weatherDescription;
 
-        // WEATHER SUMMARY DATA
-        var weatherDataDate = new Date(matchedItem.dt*1000);
-        var weatherDate = weatherDataDate.toLocaleString("en-US", {
-          dateStyle: "medium"
-        });
+      // WEATHER DETAILS DATA
+      var highTemp = Math.round(matchedItem.main.temp_max);
+      var lowTemp = Math.round(matchedItem.main.temp_min);
+      if (measurementControl === "Celsius") {
+        document.querySelector(".high-temp-number").innerHTML = highTemp + "&#176;C";
+        document.querySelector(".low-temp-number").innerHTML = lowTemp + "&#176;C";
+      } else {
+        document.querySelector(".high-temp-number").innerHTML = highTemp + "&#176;F";
+        document.querySelector(".low-temp-number").innerHTML = lowTemp + "&#176;F";
+      }
+      var averageHumidity = Math.round(matchedItem.main.humidity);
+      document.querySelector(".avg-humidity-number").innerHTML = averageHumidity + "&#37;";
 
-        document.querySelector(".weather-date").innerHTML = weatherDate;
-        var weatherTemp = Math.round(matchedItem.main.temp);
-        if (measurementControl === "Celsius") {
-          document.querySelector(".temperature").innerHTML = weatherTemp + "&#176;C";
-        } else {
-          document.querySelector(".temperature").innerHTML = weatherTemp + "&#176;F";
-        }
-
-        // WEATHER IMAGE DATA
-        var weatherCode = matchedItem.weather[0].id;
-        if (weatherCode >= 800 && weatherCode <= 803) {
-          document.querySelector(".weather-div").style.backgroundImage = "url('images/blue-sky.jpg')"
-        } else if (weatherCode < 790 || weatherCode === 804) {
-          document.querySelector(".weather-div").style.backgroundImage = "url('images/rainy-sky-2.jpg')"
-        }
-
-        var weatherIcon = matchedItem.weather[0].icon;
-        var weatherIconURL = "https://openweathermap.org/img/wn/" + weatherIcon + "@2x.png"
-        var icon = document.querySelector(".weather-icon-pic");
-        icon.src = weatherIconURL
-
-        // WEATHER SUMMARY DATA CONTINUED
-        var weatherDescription = matchedItem.weather[0].description;
-        document.querySelector(".weather-description").innerHTML = weatherDescription;
-
-        // WEATHER DETAILS DATA
-        var highTemp = Math.round(matchedItem.main.temp_max);
-        var lowTemp = Math.round(matchedItem.main.temp_min);
-
-        if (measurementControl === "Celsius") {
-          document.querySelector(".high-temp-number").innerHTML = highTemp + "&#176;C";
-          document.querySelector(".low-temp-number").innerHTML = lowTemp + "&#176;C";
-        } else {
-          document.querySelector(".high-temp-number").innerHTML = highTemp + "&#176;F";
-          document.querySelector(".low-temp-number").innerHTML = lowTemp + "&#176;F";
-        }
-
-        var averageHumidity = Math.round(matchedItem.main.humidity);
-        document.querySelector(".avg-humidity-number").innerHTML = averageHumidity + "&#37;";
-
-    } //End of the if statement which determines ready state for the weather function.
   } //This closes the forecastWeatherCallFunction().
 
-  xhr.send();
 }; //This is the end of the entire function "callTheWeather"
