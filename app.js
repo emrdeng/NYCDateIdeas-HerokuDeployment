@@ -182,24 +182,7 @@ function callEverything(){
     document.querySelector(".rightmost-container").style.gridTemplateColumns = "1fr 1fr 1fr";
   }
 
-  //DATE ACTIVITY DIV: This will run the date activity information:
-
-  // if (dateSaveCheckbox.checked === false) {
-  //   return dateHappily();
-  // } else if (dateSaveCheckbox.checked === true && restSaveCheckbox.checked === true && dessertSaveCheckbox.checked === true) {
-  //   console.log("Nothing needs to run. All items have been saved.")
-  // } else if (dateSaveCheckbox.checked === true && restSaveCheckbox.checked === true && dessertSaveCheckbox.checked === false) {
-  //   postSaveDessert();
-  // } else if (dateSaveCheckbox.checked === true && restSaveCheckbox.checked === false && dessertSaveCheckbox.checked === false) {
-  //   postSaveRestaurant();
-  //   postSaveDessert();
-  // } else if (dateSaveCheckbox.checked === true && restSaveCheckbox.checked === false && dessertSaveCheckbox.checked === true) {
-  //   postSaveRestaurant();
-  // }
-
-  //This will be the function that houses the Javascript Fetch for the Date Activity panel (incl. the random number offset):
-
-  ////////////////////////////////HANDLES THE POSTING OF THE FORM SUBMISSION: ///////////////////
+  ////////////////////////////HANDLES THE POSTING OF THE FORM SUBMISSION: ///////////////////
   var priceRange = document.getElementById("price-range")
   var userSubmittedPriceRange = priceRange.value;
   

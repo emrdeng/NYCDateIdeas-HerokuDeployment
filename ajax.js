@@ -30,14 +30,7 @@ app.get('/cuisineList', (req, res) => {
     }
     // Send the environment variables along with the parsed JSON data
     res.json({
-        CUISINENAMESJSON: cuisineData, 
-        DATEACTIVITYBASEURL: process.env.DATEACTIVITYBASEURL,
-        RESTBASEURL: process.env.RESTBASEURL,
-        RESTAPIKEY: process.env.RESTAPIKEY,
-        WEATHERURLCELSIUS: process.env.WEATHERURLCELSIUS,
-        WEATHERURLFARENHEIT: process.env.WEATHERURLFARENHEIT,
-        WEATHERFORECASTURLCELSIUS: process.env.WEATHERFORECASTURLCELSIUS,
-        WEATHERFORECASTURLFARENHEIT: process.env.WEATHERFORECASTURLFARENHEIT,
+        CUISINENAMESJSON: cuisineData,
     });
   });
 });
@@ -72,13 +65,11 @@ var dessertSave = false;
 var restWalkDistance = true;
 var dessertWalkDistance = true;
 
-console.log(
-  dateSave, 
-  restSave, 
-  dessertSave, 
-  restWalkDistance, 
-  dessertWalkDistance
-)
+console.log(`dateSave is: ${dateSave}`)
+console.log(`restSave is: ${restSave}`)
+console.log(`dessertSave is: ${dessertSave}`)
+console.log(`restWalkDistance is: ${restWalkDistance}`)
+console.log(`dessertWalkDistance is: ${dessertWalkDistance}`)
 
 ////////////////// FORM SUBMIT PARAMETERS://///////////////////
 var cuisineNames; //Note that this is JUST the full cuisineJSON file NOT the specific cuisine submitted by the user.
