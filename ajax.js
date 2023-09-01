@@ -304,8 +304,9 @@ async function fetchRestaurantAPI(){
 
     // Ensure we have valid data to pick from
     let restActualArrayResults = data.data.length;
+    console.log(`restActualArrayResults is: ${restActualArrayResults}`)
     let firstPageRandomNumber = Math.round(Math.random() * (restActualArrayResults - 1));
-
+    console.log(`firstPageRandomNumber is: ${firstPageRandomNumber}`)
     if (Object.keys(data.data[firstPageRandomNumber]).length < 30) {
       if (data.data[firstPageRandomNumber + 1] == null || data.data[firstPageRandomNumber + 1] == undefined) {
         firstPageRandomNumber = firstPageRandomNumber - 1;
