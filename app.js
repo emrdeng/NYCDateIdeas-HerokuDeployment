@@ -57,6 +57,7 @@ function fetchData() {
       .then(data => {
           cuisineNames = data;
           console.log(`cusineNamesJSON environment variable is: ${JSON.stringify(cuisineNames)}`)
+          console.log(`cusineNamesJSON environment variable is: ${cuisineNames.CUISINENAMESJSON}`)
           attachAutocomplete(cuisineNames.CUISINENAMESJSON);
       });
 }
