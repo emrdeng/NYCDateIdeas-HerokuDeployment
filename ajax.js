@@ -232,7 +232,7 @@ async function fetchDateActivity(){
     const response = await fetch(dateActivityFetchURL);
     const data = await response.json();
 
-    if (data.paging.results === 0) {
+    if (data.paging.results === 0 || data.paging.results === "0") {
       console.log("refetching date activity")
       return fetchDateActivity();  // Function to refetch
     }
@@ -291,10 +291,8 @@ async function fetchRestaurantAPI(){
   try{
     const response = await fetch(restaurantFetchURL);
     const data = await response.json();
-    console.log(data)
-    console.log(data.paging)
-    console.log(data.paging.results)
-    if (data.paging.results === 0) {
+
+    if (data.paging.results === 0 || data.paging.results === "0") {
       console.log("restaurant data.paging.results === 0")
       restLocation = "60763";
       return null;  // Function to refetch
@@ -358,7 +356,8 @@ async function fetchDessertAPI(){
     const response = await fetch(dessertFetchURL);
     const data = await response.json();
 
-    if (data.paging.results === 0) {
+    if (data.paging.results === 0 || data.paging.results === "0") {
+      console.log("dessert data.paging.results === 0")
       return null;  // Function to refetch
     }
 
