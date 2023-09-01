@@ -291,7 +291,9 @@ async function fetchRestaurantAPI(){
   try{
     const response = await fetch(restaurantFetchURL);
     const data = await response.json();
-
+    console.log(data)
+    console.log(data.paging)
+    console.log(data.paging.results)
     if (data.paging.results === 0) {
       console.log("restaurant data.paging.results === 0")
       restLocation = "60763";
