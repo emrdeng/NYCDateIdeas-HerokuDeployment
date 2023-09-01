@@ -192,6 +192,8 @@ function callEverything(){
        if (data.restaurant && data.restaurant !== null) {
         restaurantData = data.restaurant;
         console.log(`restaurantData: ${restaurantData}`);
+        document.querySelector(".restaurant-div").style.display = "";
+        document.querySelector(".rest-error-page").style.display = "none";
         restaurantFrontEndDisplay()
       } else if (data.restaurant === null) {
         console.log('restaurantData is null');
@@ -218,6 +220,8 @@ function callEverything(){
       if (data.dessert && data.dessert !== null) {
         dessertData = data.dessert;
         console.log(`dessertData: ${dessertData}`);
+        document.querySelector(".dessert-error-page").style.display = "none";
+        document.querySelector(".dessert-div").style.display = "";
         dessertFrontEndDisplay();
       } else if (data.dessert === null) {
         console.log('dessertData is null');
