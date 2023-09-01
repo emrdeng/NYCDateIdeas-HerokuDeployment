@@ -160,6 +160,9 @@ function callEverything() {
         console.log("dateActivityFetched!")
         console.log(dateActivityData)
       })
+      .catch(error => {
+        console.error("There was an error fetching the date activity data:", error);
+      });
 
 
         var dateActivityName = dateActivityData.data[dateActivityRandomNumber].name;
