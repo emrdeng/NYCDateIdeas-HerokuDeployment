@@ -293,9 +293,10 @@ async function fetchRestaurantAPI(){
     const data = await response.json();
 
     if (data.paging.results === 0) {
+      console.log("restaurant data.paging.results === 0")
       restLocation = "60763";
       return null;  // Function to refetch
-    }
+    } 
 
     // Ensure we have valid data to pick from
     let restActualArrayResults = data.data.length;
