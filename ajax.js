@@ -56,27 +56,8 @@ app.get('/forecast-weather', (req, res) => {
     .catch(error => res.status(500).json({ error: 'Failed to fetch forecast weather' }));
 });
 
-////////////////////////////////////////// GLOBAL VARIABLES: ///////////////////////////////////
-////////////////// CHECKBOX PARAMETERS://///////////////////
-// var dateSave = false;
-// var restSave = false;
-// var dessertSave = false;
-
-// var restWalkDistance = true;
-// var dessertWalkDistance = true;
-
-// console.log(`dateSave is: ${dateSave}`)
-// console.log(`restSave is: ${restSave}`)
-// console.log(`dessertSave is: ${dessertSave}`)
-// console.log(`restWalkDistance is: ${restWalkDistance}`)
-// console.log(`dessertWalkDistance is: ${dessertWalkDistance}`)
-
 ////////////////// FORM SUBMIT PARAMETERS://///////////////////
 var cuisineNames; //Note that this is JUST the full cuisineJSON file NOT the specific cuisine submitted by the user.
-
-// var pricesRestaurants;
-
-// var cuisineSearchKey;
 
 ///////////////// DATE ACTIVITY API PARAMETERS://///////////////////
 var dateActivityBaseURL = process.env.DATEACTIVITYBASEURL;
@@ -127,73 +108,6 @@ var parameterCombinedFoodKey = "combined_food=";
 ///////////////// DESSERT API PARAMETERS://///////////////////
 var parameterRestTag = "restaurant_tagcategory=";
 
-// var restTagCategory;
-
-// var restLocation;
-
-/////////////////// HANDLES DATING STATUS DETAIL THAT DETERMINES WHAT FUNCTIONS TO RUN ////////////////////////////
-// app.post('/checkbox-info', (req, res) => {
-//   // Get the data from the request body
-//   const { 
-//     dateSave, 
-//     restSave, 
-//     dessertSave, 
-//     restWalkDistance, 
-//     dessertWalkDistance 
-//   } = req.body;
-
-//   console.log(`dateSave is: ${dateSave}`)
-//   console.log(`restSave is: ${restSave}`)
-//   console.log(`dessertSave is: ${dessertSave}`)
-//   console.log(`restWalkDistance is: ${restWalkDistance}`)
-//   console.log(`dessertWalkDistance is: ${dessertWalkDistance}`)
-
-//   // Send a response back to the frontend
-//   res.json({ message: 'checkbox data received successfully' });
-// });
-
-///////////////////// ONE SUBMIT BUTTON POSTING GLOBAL VARIABLES FROM THE USER FORM: //////////////////////////////////
-// app.post('/form-submit',(req, res) => {
-//   const { userSubmittedPriceRange, userSubmittedCuisineSearch, userSubmittedExtraChatTime } = req.body;
-
-//   if (userSubmittedPriceRange === "$") {
-//     pricesRestaurants = "10953";
-//   } else if (userSubmittedPriceRange === "$$ - $$$") {
-//     pricesRestaurants = "10955";
-//   } else if (userSubmittedPriceRange === "$$$$") {
-//     pricesRestaurants = "10954";
-//   } else {
-//     pricesRestaurants = "all"
-//   }
-
-//   if (userSubmittedExtraChatTime === "Bars & Pubs") {
-//     restTagCategory = "11776";
-//   } else if (userSubmittedExtraChatTime === "Coffee & Tea") {
-//     restTagCategory = "9900";
-//   } else if (userSubmittedExtraChatTime === "Dessert") {
-//     restTagCategory = "9909,9901";
-//   } else if (userSubmittedExtraChatTime === "Any") {
-//     restTagCategory = "11776,9900,9909,9901";
-//   } else {
-//     restTagCategory = false
-//   }
-
-//   //This will identify the key that correlates with the cuisine search result.
-//   function getKeyByCuisineValue(object, value) {
-//     var x = Object.keys(object)
-//     return x.find(function(key) {
-//       return object[key].label.toLowerCase() === value.toLowerCase()
-//     });
-//   }
-
-//   if (userSubmittedCuisineSearch === "") {
-//     cuisineSearchKey = "all";
-//   } else {
-//     cuisineSearchKey = getKeyByCuisineValue(cuisineNames, userSubmittedCuisineSearch);
-//   };
-
-//   res.json({ success: true, message: 'Data processed' });
-// })
 
 ///////////////////// ONE SUBMIT BUTTON FETCHING EVERYTHING: /////////////////////////////////////////////
 app.get('/fetch-data', async (req, res) => {

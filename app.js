@@ -14,13 +14,6 @@ const dessertSaveCheckbox = document.querySelector(".dessert-save-checkbox");
 const restWalkDistance = document.querySelector(".rest-walking-checkbox");
 const dessertWalkDistance = document.querySelector(".dessert-walking-checkbox");
 
-// EVENT LISTENERS FOR THE DATING STATUSES:
-// dateSaveCheckbox.addEventListener('click', sendCheckboxDataToBackend);
-// restSaveCheckbox.addEventListener('click', sendCheckboxDataToBackend);
-// dessertSaveCheckbox.addEventListener('click', sendCheckboxDataToBackend);
-// restWalkDistance.addEventListener('click', sendCheckboxDataToBackend);
-// dessertWalkDistance.addEventListener('click', sendCheckboxDataToBackend);
-
 // EVENT LISTENERS FOR THE SUBMIT BUTTON:
 // submitBtn.addEventListener("click", callEverything);
 submitBtn.addEventListener("click", function(event) {
@@ -56,37 +49,6 @@ function addBtnMouseOver() {
 function addBtnMouseOut() {
   document.querySelector(".fa-plus").style.color = "#1C3879";
 }
-
-/////////////// THIS WILL SEND THE DATING STATUSES TO THE BACKEND: /////////////////
-// function sendCheckboxDataToBackend() {
-//   const data = {
-//     dateSave: dateSaveCheckbox.checked,
-//     restSave: restSaveCheckbox.checked,
-//     dessertSave: dessertSaveCheckbox.checked,
-//     restWalkDistance: restWalkDistance.checked,
-//     dessertWalkDistance: dessertWalkDistance.checked
-//   };
-
-//   fetch('/checkbox-info', {
-//     method: 'POST',
-//     headers: {
-//       'Content-Type': 'application/json',
-//     },
-//     body: JSON.stringify(data)
-//   })
-//   .then(response => response.json())
-//   .then(data => {
-//     console.log(`dateSave is: ${dateSaveCheckbox.checked}`)
-//     console.log(`restSave is: ${restSaveCheckbox.checked}`)
-//     console.log(`dessertSave is: ${dessertSaveCheckbox.checked}`)
-//     console.log(`restWalkDistance is: ${restWalkDistance.checked}`)
-//     console.log(`dessertWalkDistance is: ${dessertWalkDistance.checked}`)
-//     console.log('Success:', data);
-//   })
-//   .catch(error => {
-//     console.error('Error:', error);
-//   });
-// }
 
 /////////////// SEARCH BAR: ////////////////////
 var cuisineSearch = document.getElementById("cuisine-selection");
@@ -144,8 +106,6 @@ function removeElements() {
   var items = document.querySelectorAll(".list-items");
   items.forEach(item => item.remove());
 }
-
-
 
 //This is the overarching button formula that will address everything.
 function callEverything(){
@@ -214,41 +174,59 @@ function callEverything(){
     restTagCategory = false
   }
 
-  // const formDataToSend = {
-  //   userSubmittedPriceRange: userSubmittedPriceRange,
-  //   userSubmittedCuisineSearch: userSubmittedCuisineSearch,
-  //   userSubmittedExtraChatTime: userSubmittedExtraChatTime
-  // };
-
-  // fetch("/form-submit", {
-  //   method: "POST",
-  //   headers: {
-  //     "Content-Type": "application/json"
-  //   },
-  //   body: JSON.stringify(formDataToSend)
-  //   })
-  //   .then(response => response.json())
-  //   .then(data => {
-  //     // Handle the response from the server
-  //     console.log(data);
-  //   })
-  //   .catch(error => {
-  //     console.error("Error:", error);
-  //   });
-
   ////////////////////////////////HANDLES THE FETCHING OF DETAILS: ///////////////////
 
   fetch(`/fetch-data?dateSave=${dateSaveCheckbox.checked}&restSave=${restSaveCheckbox.checked}&dessertSave=${dessertSaveCheckbox.checked}&restWalkDistance=${restWalkDistance.checked}&dessertWalkDistance=${dessertWalkDistance.checked}&pricesRestaurants=${pricesRestaurants}&userSubmittedCuisineSearch=${userSubmittedCuisineSearch}&restTagCategory=${restTagCategory}`)
     .then(response => response.json())
     .then(data => {
-      // Only update parts of the state that are present in the response
-      if (data.dateActivity) dateActivityData = data.dateActivity;
-      if (data.restaurant) restaurantData = data.restaurant;
-      if (data.dessert) dessertData = data.dessert;
+      //////////////// Handling dateActivity data ////////////////////////
+      if (data.dateActivity && data.dateActivity !== null) {
+        dateActivityData = data.dateActivity;
+        console.log(`dateActivity: ${dateActivityData}`);
+        dateActivityFrontEndDisplay()
+      } else {
+        console.log('dateActivity is missing');
+      }
+      
+       ////////////////  Handling restaurant data ////////////////////////
+       if (data.restaurant && data.restaurant !== null) {
+        restaurantData = data.restaurant;
+        console.log(`restaurantData: ${restaurantData}`);
+        restaurantFrontEndDisplay()
+      } else if (data.restaurant === null) {
+        console.log('restaurantData is null');
+        document.querySelector(".restaurant-div").style.display = "none";
+        document.querySelector(".rest-error-page").style.display = "block";
+        if (userSubmittedExtraChatTime === "None" && userSubmittedDate === "") {
+          document.querySelector(".rightmost-container").style.gridTemplateColumns = "1fr 1fr";
+          document.querySelector(".rightmost-container").style.display = "grid";
+        } else if (userSubmittedExtraChatTime === "None" && userSubmittedDate != "") {
+          document.querySelector(".rightmost-container").style.display = "grid";
+          document.querySelector(".rightmost-container").style.gridTemplateColumns = "1fr 1fr 1fr";
+        } else if (userSubmittedExtraChatTime != "None" && userSubmittedDate != "") {
+          document.querySelector(".rightmost-container").style.display = "grid";
+          document.querySelector(".rightmost-container").style.gridTemplateColumns = "1fr 1fr 1fr 1fr";
+        } else if (userSubmittedExtraChatTime != "None" && userSubmittedDate === "") {
+          document.querySelector(".rightmost-container").style.display = "grid";
+          document.querySelector(".rightmost-container").style.gridTemplateColumns = "1fr 1fr 1fr";
+        }
+      } else {
+        console.log('restaurantData is missing');
+      }
 
-      console.log(`dateActivity: ${dateActivityData}`)
-      console.log(`restaurantData: ${restaurantData}`)
-      console.log(`dessertData: ${dessertData}`)
+      //////////////// Handling dessert data ////////////////////////
+      if (data.dessert && data.dessert !== null) {
+        dessertData = data.dessert;
+        console.log(`dessertData: ${dessertData}`);
+        dessertFrontEndDisplay();
+      } else if (data.dessert === null) {
+        console.log('dessertData is null');
+        document.querySelector(".dessert-div").style.display = "none";
+        document.querySelector(".dessert-error-page").style.display = "block";
+      } else {
+        console.log('dessertData is missing');
+        // Additional processing for case 3
+      }
 
       updateFrontendDisplay();
     })
@@ -256,8 +234,7 @@ function callEverything(){
       console.error('Error fetching data:', error);
     });
 
-  
-  function updateFrontendDisplay(){
+  function dateActivityFrontEndDisplay(){
     // THIS HANDLES THE FETCHED DATE ACTIVITY FROM BACK END AND PUTS IT INTO THE FRONT END:
     var dateActivityName = dateActivityData.name;
     document.querySelector(".date-activity-title").innerHTML = dateActivityName;
@@ -313,30 +290,9 @@ function callEverything(){
     document.querySelector(".dadg4").innerHTML = dateActivityRating
     var dateActivityDescription = dateActivityData.description;
     document.querySelector(".date-activity-description-paragraph").innerHTML = dateActivityDescription
+  } // End of the dateActivityFrontEndDisplay()
 
-
-    // THIS HANDLES THE FETCHED RESTAURANT INFO FROM BACK END AND PUTS IT INTO THE FRONT END:
-    if (restaurantData == null){
-      document.querySelector(".restaurant-div").style.display = "none";
-      document.querySelector(".rest-error-page").style.display = "block";
-      if (userSubmittedExtraChatTime === "None" && userSubmittedDate === "") {
-        document.querySelector(".rightmost-container").style.gridTemplateColumns = "1fr 1fr";
-        document.querySelector(".rightmost-container").style.display = "grid";
-      } else if (userSubmittedExtraChatTime === "None" && userSubmittedDate != "") {
-        document.querySelector(".rightmost-container").style.display = "grid";
-        document.querySelector(".rightmost-container").style.gridTemplateColumns = "1fr 1fr 1fr";
-      } else if (userSubmittedExtraChatTime != "None" && userSubmittedDate != "") {
-        document.querySelector(".rightmost-container").style.display = "grid";
-        document.querySelector(".rightmost-container").style.gridTemplateColumns = "1fr 1fr 1fr 1fr";
-      } else if (userSubmittedExtraChatTime != "None" && userSubmittedDate === "") {
-        document.querySelector(".rightmost-container").style.display = "grid";
-        document.querySelector(".rightmost-container").style.gridTemplateColumns = "1fr 1fr 1fr";
-      }
-    } else {
-      document.querySelector(".restaurant-div").style.display = "";
-      document.querySelector(".rest-error-page").style.display = "none";
-    };
-
+  function restaurantFrontEndDisplay(){
     var restName = restaurantData.name;
     document.querySelector(".rest-title").innerHTML = restName;
 
@@ -402,17 +358,9 @@ function callEverything(){
 
     var restDescription = restaurantData.description;
     document.querySelector(".restaurant-description-paragraph").innerHTML = restDescription;
+  } // End of the restaurantFrontEndDisplay()
 
-
-    // THIS HANDLES THE FETCHED DESSERT INFO FROM BACK END AND PUTS IT INTO THE FRONT END:
-    if(dessertData == null){
-      document.querySelector(".dessert-div").style.display = "none";
-      document.querySelector(".dessert-error-page").style.display = "block";
-    } else {
-      document.querySelector(".dessert-div").style.display = "";
-      document.querySelector(".dessert-error-page").style.display = "none";
-    }
-
+  function dessertFrontEndDisplay(){
     var dessertName = dessertData.name;
     document.querySelector(".dessert-title").innerHTML = dessertName;
 
@@ -477,8 +425,8 @@ function callEverything(){
 
     var dessertDescription = dessertData.description;
     document.querySelector(".dessert-description-paragraph").innerHTML = dessertDescription;
+  } // End of the dessertFrontEndDisplay()
 
-  } // End of the updateFrontendDisplay()
 } //This is the end of the callEverything() function.
 
 
