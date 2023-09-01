@@ -29,19 +29,15 @@ submitBtn.addEventListener("click", function(event) {
 });
 submitBtn.addEventListener("mouseover", heartAnimation);
 
-// Storing the locations of the date activity and restaurant:
-var dateActivityLocationArray = [];
-var restLocationArray = [];
-
 // GLOBAL PARAMETERS FOR THE FRONT END MEMORY OF THE DATE DETAILS:
 
 let dateActivityData;
 let restaurantData;
 let dessertData;
 
-console.log(`dateActivity: ${JSON.stringify(dateActivityData)}`)
-console.log(`restaurantData: ${JSON.stringify(restaurantData)}`)
-console.log(`dessertData: ${JSON.stringify(dessertData)}`)
+console.log(`dateActivity: ${dateActivityData}`)
+console.log(`restaurantData: ${restaurantData}`)
+console.log(`dessertData: ${dessertData}`)
 
 // Function heartAnimation This is the animation of the heart button on hover.
 function heartAnimation() {
@@ -90,6 +86,12 @@ function sendCheckboxDataToBackend() {
     console.error('Error:', error);
   });
 }
+
+console.log(`dateSave is: ${dateSaveCheckbox.checked}`)
+console.log(`restSave is: ${restSaveCheckbox.checked}`)
+console.log(`dessertSave is: ${dessertSaveCheckbox.checked}`)
+console.log(`restWalkDistance is: ${restWalkDistance.checked}`)
+console.log(`dessertWalkDistance is: ${dessertWalkDistance.checked}`)
 
 /////////////// SEARCH BAR: ////////////////////
 var cuisineSearch = document.getElementById("cuisine-selection");

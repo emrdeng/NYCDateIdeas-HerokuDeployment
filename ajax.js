@@ -207,9 +207,6 @@ app.get('/fetch-data', async (req, res) => {
           results.dessert = dessertData;
       }
 
-      console.log(JSON.stringify(results.dateActivity))
-      console.log(JSON.stringify(results.restaurant))
-      console.log(JSON.stringify(results.dessert))
       res.json(results);
 
   } catch (error) {
@@ -229,11 +226,14 @@ async function fetchDateActivity(){
 
   var dateActivityFetchURL = dateActivityBaseURL + parameterLocationId + locationId + and + parameterSort + sort + and + parameterSubCategory + dateActivitySubCategory + and + parameterCurrency + currency + and + parameterUnit + lunit + and + parameterLimit + limit + and + parameterLang + lang + and + parameterRestAPIKey + restAPIKey + and + parameterMinRating + minRating + and + parameterOffset + dateActivityRandomOffsetNumber;
 
+  console.log(`dateActivityFetchURL: ${dateActivityFetchURL}`)
+
   try{
     const response = await fetch(dateActivityFetchURL);
     const data = await response.json();
 
     if (data.paging.results === 0) {
+      console.log("refetching date activity")
       return fetchDateActivity();  // Function to refetch
     }
 
@@ -285,6 +285,8 @@ async function fetchDateActivity(){
 async function fetchRestaurantAPI(){
 
   var restaurantFetchURL = restBaseURL + parameterLocationId + dateActivityLocation + and + parameterCurrency + currency + and + parameterUnit + lunit + and + parameterLimit + limit + and + parameterLang + lang + and + parameterRestAPIKey + restAPIKey + and + parameterMinRating + minRating + and + parameterRestPrice + pricesRestaurants + and + parameterCombinedFoodKey + cuisineSearchKey;
+
+  console.log(`restaurantFetchURL: ${restaurantFetchURL}`)
 
   try{
     const response = await fetch(restaurantFetchURL);
@@ -346,6 +348,8 @@ async function fetchRestaurantAPI(){
 async function fetchDessertAPI(){
 
   var dessertFetchURL = restBaseURL + parameterLocationId + restLocation + and + parameterCurrency + currency + and + parameterUnit + lunit + and + parameterLimit + limit + and + parameterLang + lang + and + parameterRestAPIKey + restAPIKey + and + parameterMinRating + minRating + and + parameterRestPrice + pricesRestaurants + and + parameterRestTag + restTagCategory;
+
+  console.log(`dessertFetchURL: ${dessertFetchURL}`)
 
   try{
     const response = await fetch(dessertFetchURL);
