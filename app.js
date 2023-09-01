@@ -51,7 +51,8 @@ var cuisineSearch = document.getElementById("cuisine-selection");
 cuisineSearch.addEventListener("focus", fetchData, { once: true });
 
 function fetchData() {
-  console.log(process.env.CUISINENAMESJSON)
+  console.log("fetchData is running!")
+  console.log(`cusineNamesJSON environment variable is: ${process.env.CUISINENAMESJSON}`)
   fetch(process.env.CUISINENAMESJSON)
       .then(response => response.json())
       .then(data => {
