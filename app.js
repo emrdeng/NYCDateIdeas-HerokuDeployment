@@ -52,16 +52,16 @@ cuisineSearch.addEventListener("focus", fetchData, { once: true });
 
 function fetchData() {
   console.log("fetchData is running!")
-  console.log(`cusineNamesJSON environment variable is: ${process.env.CUISINENAMESJSON}`)
   fetch("https://nyc-date-planner-224c86480c8a.herokuapp.com/env-vars")
       .then(response => response.json())
       .then(data => {
           cuisineNames = data;
+          console.log(`cusineNamesJSON environment variable is: ${process.env.cuisineNames.CUISINENAMESJSON}`)
           attachAutocomplete(cuisineNames.CUISINENAMESJSON);
       });
 }
 
-function attachAutocomplete() {
+function attachAutocomplete(cuisineNames) {
     var sortedCuisineNames = Object.values(cuisineNames).map(item => item.label).sort();
 
     cuisineSearch.addEventListener("keyup", function(e) {
