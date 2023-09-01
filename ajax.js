@@ -242,7 +242,7 @@ app.get('/fetch-data', async (req, res) => {
           restLocation = location;
       }
 
-      if (dessertSave === "false"|| restTagCategory  !== "false") {
+      if (dessertSave === "false"&& restTagCategory  !== "false") {
         console.log(`dessertSave is ${dessertSave}`)
         console.log(`restTagCategory is ${restTagCategory}`)
           const dessertData = await fetchDessertAPI(restLocation, pricesRestaurants, restTagCategory);
