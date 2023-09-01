@@ -341,7 +341,10 @@ async function fetchRestaurantAPI(dateActivityLocation, pricesRestaurants, cuisi
 
     if (data.paging.results === "0") {
       console.log("restaurant data.paging.results === 0")
-      return null;
+      return {
+        restData: null,
+        location: "60763"
+      };
     } 
 
     // Ensure we have valid data to pick from
@@ -409,7 +412,7 @@ async function fetchDessertAPI(restLocation, pricesRestaurants, restTagCategory)
 
     if (data.paging.results === "0") {
       console.log("dessert data.paging.results === 0")
-      return null;  // Function to refetch
+      return null;  
     }
 
     // Ensure we have valid data to pick from
