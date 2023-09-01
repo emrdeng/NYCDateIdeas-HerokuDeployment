@@ -1199,7 +1199,7 @@ function callTheWeather() {
       document.querySelector(".avg-humidity-number").innerHTML = averageHumidity + "&#37;";
   }; //This closes the weatherCallFunction().
 
-  function forecastWeatherCallFunction(){
+  function forecastWeatherCallFunction(weatherData){
 
     var searchDate = userSubmittedDate + " 12:00:00"
     let matchedItem;
