@@ -168,6 +168,8 @@ app.post('/form-submit',(req, res) => {
     restTagCategory = "9909,9901";
   } else if (userSubmittedExtraChatTime === "Any") {
     restTagCategory = "11776,9900,9909,9901";
+  } else {
+    restTagCategory = false
   }
 
   //This will identify the key that correlates with the cuisine search result.
@@ -202,7 +204,7 @@ app.get('/fetch-data', async (req, res) => {
           results.restaurant = restData;
       }
 
-      if (!dessertSave) {
+      if (!dessertSave && restTagCategory) {
           const dessertData = await fetchDessertAPI(); // You'll need to implement fetchDessert()
           results.dessert = dessertData;
       }
