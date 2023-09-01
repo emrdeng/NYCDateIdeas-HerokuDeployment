@@ -247,6 +247,8 @@ async function fetchDateActivity(restWalkDistance){
 ////////////////////////////////////////// RESTAURANT API: ///////////////////////////////////
 async function fetchRestaurantAPI(dateActivityLocation, pricesRestaurants, cuisineSearchKey, dessertWalkDistance){
 
+  dateActivityLocation = dateActivityLocation || "60763";
+
   var restaurantFetchURL = restBaseURL + parameterLocationId + dateActivityLocation + and + parameterCurrency + currency + and + parameterUnit + lunit + and + parameterLimit + limit + and + parameterLang + lang + and + parameterRestAPIKey + restAPIKey + and + parameterMinRating + minRating + and + parameterRestPrice + pricesRestaurants + and + parameterCombinedFoodKey + cuisineSearchKey;
 
   console.log(`restaurantFetchURL: ${restaurantFetchURL}`)
@@ -317,6 +319,7 @@ async function fetchRestaurantAPI(dateActivityLocation, pricesRestaurants, cuisi
 
 ////////////////////////////////////////// DESSERT API: ///////////////////////////////////
 async function fetchDessertAPI(restLocation, pricesRestaurants, restTagCategory){
+  restLocation = restLocation || dateActivityLocation || "60763";
 
   var dessertFetchURL = restBaseURL + parameterLocationId + restLocation + and + parameterCurrency + currency + and + parameterUnit + lunit + and + parameterLimit + limit + and + parameterLang + lang + and + parameterRestAPIKey + restAPIKey + and + parameterMinRating + minRating + and + parameterRestPrice + pricesRestaurants + and + parameterRestTag + restTagCategory;
 
