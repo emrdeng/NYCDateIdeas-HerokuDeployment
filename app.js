@@ -39,6 +39,10 @@ let dateActivityData;
 let restaurantData;
 let dessertData;
 
+console.log(`dateActivity: ${JSON.stringify(dateActivityData)}`)
+console.log(`restaurantData: ${JSON.stringify(restaurantData)}`)
+console.log(`dessertData: ${JSON.stringify(dessertData)}`)
+
 // Function heartAnimation This is the animation of the heart button on hover.
 function heartAnimation() {
   var heartElement = heartBtn.classList;
