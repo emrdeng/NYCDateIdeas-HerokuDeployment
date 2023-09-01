@@ -14,13 +14,30 @@ const dessertSaveCheckbox = document.querySelector(".dessert-save-checkbox");
 const restWalkDistance = document.querySelector(".rest-walking-checkbox");
 const dessertWalkDistance = document.querySelector(".dessert-walking-checkbox");
 
-// Event Listeners:
-submitBtn.addEventListener("click", callEverything);
+// EVENT LISTENERS FOR THE DATING STATUSES:
+dateSaveCheckbox.addEventListener('click', sendCheckboxDataToBackend);
+restSaveCheckbox.addEventListener('click', sendCheckboxDataToBackend);
+dessertSaveCheckbox.addEventListener('click', sendCheckboxDataToBackend);
+restWalkDistance.addEventListener('click', sendCheckboxDataToBackend);
+dessertWalkDistance.addEventListener('click', sendCheckboxDataToBackend);
+
+// EVENT LISTENERS FOR THE SUBMIT BUTTON:
+// submitBtn.addEventListener("click", callEverything);
+submitBtn.addEventListener("click", function(event) {
+  event.preventDefault();
+  callEverything();
+});
 submitBtn.addEventListener("mouseover", heartAnimation);
 
 // Storing the locations of the date activity and restaurant:
 var dateActivityLocationArray = [];
 var restLocationArray = [];
+
+// GLOBAL PARAMETERS FOR THE FRONT END MEMORY OF THE DATE DETAILS:
+
+let dateActivityData;
+let restaurant;
+let dessert;
 
 // Function heartAnimation This is the animation of the heart button on hover.
 function heartAnimation() {
@@ -42,6 +59,32 @@ function addBtnMouseOver() {
 
 function addBtnMouseOut() {
   document.querySelector(".fa-plus").style.color = "#1C3879";
+}
+
+/////////////// THIS WILL SEND THE DATING STATUSES TO THE BACKEND: /////////////////
+function sendCheckboxDataToBackend() {
+  const data = {
+    dateSave: dateSaveCheckbox.checked,
+    restSave: restSaveCheckbox.checked,
+    dessertSave: dessertSaveCheckbox.checked,
+    restWalkDistance: restWalkDistance.checked,
+    dessertWalkDistance: dessertWalkDistance.checked
+  };
+
+  fetch('/checkbox-info', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data)
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log('Success:', data);
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
 }
 
 /////////////// SEARCH BAR: ////////////////////
@@ -137,182 +180,289 @@ function callEverything() {
 
   //DATE ACTIVITY DIV: This will run the date activity information:
 
-  if (dateSaveCheckbox.checked === false) {
-    return dateHappily();
-  } else if (dateSaveCheckbox.checked === true && restSaveCheckbox.checked === true && dessertSaveCheckbox.checked === true) {
-    console.log("Nothing needs to run. All items have been saved.")
-  } else if (dateSaveCheckbox.checked === true && restSaveCheckbox.checked === true && dessertSaveCheckbox.checked === false) {
-    postSaveDessert();
-  } else if (dateSaveCheckbox.checked === true && restSaveCheckbox.checked === false && dessertSaveCheckbox.checked === false) {
-    postSaveRestaurant();
-    postSaveDessert();
-  } else if (dateSaveCheckbox.checked === true && restSaveCheckbox.checked === false && dessertSaveCheckbox.checked === true) {
-    postSaveRestaurant();
-  }
+  // if (dateSaveCheckbox.checked === false) {
+  //   return dateHappily();
+  // } else if (dateSaveCheckbox.checked === true && restSaveCheckbox.checked === true && dessertSaveCheckbox.checked === true) {
+  //   console.log("Nothing needs to run. All items have been saved.")
+  // } else if (dateSaveCheckbox.checked === true && restSaveCheckbox.checked === true && dessertSaveCheckbox.checked === false) {
+  //   postSaveDessert();
+  // } else if (dateSaveCheckbox.checked === true && restSaveCheckbox.checked === false && dessertSaveCheckbox.checked === false) {
+  //   postSaveRestaurant();
+  //   postSaveDessert();
+  // } else if (dateSaveCheckbox.checked === true && restSaveCheckbox.checked === false && dessertSaveCheckbox.checked === true) {
+  //   postSaveRestaurant();
+  // }
 
   //This will be the function that houses the Javascript Fetch for the Date Activity panel (incl. the random number offset):
 
+  ////////////////////////////////HANDLES THE POSTING OF THE FORM SUBMISSION: ///////////////////
+  var priceRange = document.getElementById("price-range")
+  var userSubmittedPriceRange = priceRange.value;
+  
+  var userSubmittedCuisineSearch = document.getElementById("cuisine-selection").val
+  
+  const formDataToSend = {
+    userSubmittedPriceRange: userSubmittedPriceRange,
+    userSubmittedCuisineSearch: userSubmittedCuisineSearch
+  };
+
+  fetch("/form-submit", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(formDataToSend)
+    })
+    .then(response => response.json())
+    .then(data => {
+      // Handle the response from the server
+      console.log(data);
+    })
+    .catch(error => {
+      console.error("Error:", error);
+    });
+
+  ////////////////////////////////HANDLES THE FETCHING OF DETAILS: ///////////////////
+
+  fetch('/fetch-data')
+    .then(response => response.json())
+    .then(data => {
+      // Only update parts of the state that are present in the response
+      if (data.dateActivity) dateActivityData = data.dateActivity;
+      if (data.restaurant) restaurant = data.restaurant;
+      if (data.dessert) dessert = data.dessert;
+
+      updateFrontendDisplay();
+    })
+    .catch(error => {
+      console.error('Error fetching data:', error);
+    });
+
+  
+  function updateFrontendDisplay(){
+    // THIS HANDLES THE FETCHED DATE ACTIVITY FROM BACK END AND PUTS IT INTO THE FRONT END:
+    var dateActivityName = dateActivityData.name;
+    document.querySelector(".date-activity-title").innerHTML = dateActivityName;
+
+    if (dateActivityData.photo == null || dateActivityData.photo === "" || dateActivityData.photo == undefined) {
+      document.querySelector(".date-activity-pic").style.display = "none";
+      document.querySelector(".date-activity-pic-error").style.display = "flex";
+    } else {
+      var dateActivityPhoto = dateActivityData.photo.images.large.url;
+      document.querySelector(".date-activity-pic").setAttribute("src", dateActivityPhoto);
+      document.querySelector(".date-activity-pic").style.display = "";
+      document.querySelector(".date-activity-pic-error").style.display = "none"
+    }
+
+    var dateActivityWebsite = dateActivityData.website;
+    if (dateActivityWebsite === "" || dateActivityWebsite == null || dateActivityWebsite == undefined) {
+      document.querySelector(".date-activity-links-paragraph").innerHTML = "<a href='' target='_blank' class='date-activity-reviews'>TripAdvisor reviews</a>"
+    } else {
+      document.querySelector(".date-activity-links-paragraph").innerHTML = "<a href='' target='_blank' class='date-activity-link'>Website</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href='' target='_blank' class='date-activity-reviews'>TripAdvisor reviews</a>"
+      document.querySelector(".date-activity-link").setAttribute("href", dateActivityWebsite);
+    };
+    var dateActivityTripAdvisor = dateActivityData.web_url;
+    document.querySelector(".date-activity-reviews").setAttribute("href", dateActivityTripAdvisor);
+
+    var dateActivityPhone = dateActivityData.phone;
+    if (dateActivityPhone === "" || dateActivityPhone == null || dateActivityPhone == undefined) {
+      document.querySelector(".date-activity-phone").style.display = "none";
+    } else {
+      document.querySelector(".date-activity-phone").style.display = "";
+      document.querySelector(".date-activity-phone").innerHTML = dateActivityPhone;
+    };
+
+    // DATE ACTIVITY ADDRESS EDITS:
+    var dateActivityStreet1 = dateActivityData.address_obj.street1;
+    var dateActivityCity = dateActivityData.address_obj.city;
+    var dateActivityState = dateActivityData.address_obj.state;
+    if (dateActivityStreet1 == null || dateActivityStreet1 == undefined || dateActivityStreet1 === "") {
+      document.querySelector(".date-activity-street-1").style.display = "none";
+    } else {
+      document.querySelector(".date-activity-street-1").style.display = "";
+      document.querySelector(".date-activity-street-1").innerHTML = dateActivityStreet1;
+    }
+    if (dateActivityData.address_obj.postalcode == null || dateActivityData.address_obj.postalcode == undefined || dateActivityData.address_obj.postalcode === "") {
+      document.querySelector(".date-activity-city").innerHTML = dateActivityCity + ", " + dateActivityState;
+    } else {
+      let dateActivityZip = (dateActivityData.address_obj.postalcode);
+      let dateActivityZipCut = dateActivityZip.split("-")[0];
+      document.querySelector(".date-activity-city").innerHTML = dateActivityCity + ", " + dateActivityState + " " + dateActivityZipCut;
+    };
+
+    //OTHER DATE ACTIVITY EDITS:
+    var dateActivityRating = dateActivityData.rating;
+    document.querySelector(".dadg4").innerHTML = dateActivityRating
+    var dateActivityDescription = dateActivityData.description;
+    document.querySelector(".date-activity-description-paragraph").innerHTML = dateActivityDescription
+
+  } // End of the updateFrontendDisplay()
+    
+    
+
   function dateHappily() {
 
-    fetch("https://nyc-date-planner-224c86480c8a.herokuapp.com/fetch-date-activity")
-      .then(response => response.json())
-      .then(dateActivityData => {
-        console.log("dateActivityFetched!")
-        console.log(dateActivityData)
-      })
-      .catch(error => {
-        console.error("There was an error fetching the date activity data:", error);
-      });
+    // THIS HANDLES THE FETCHING OF THE DATE ACTIVITY FROM THE BACKEND:
+    // let dateActivityData;
 
+    // fetch("https://nyc-date-planner-224c86480c8a.herokuapp.com/fetch-date-activity")
+    //   .then(response => response.json())
+    //   .then(dateActivityJSON => {
+    //     console.log("dateActivityFetched!")
+    //     console.log(dateActivityJSON)
+    //     dateActivityData = dateActivityJSON
+    //   })
+    //   .catch(error => {
+    //     console.error("There was an error fetching the date activity data:", error);
+    //   });
+    
+    // // THIS HANDLES THE FETCHED DATE ACTIVITY FROM BACK END AND PUTS IT INTO THE FRONT END:
+    // var dateActivityName = dateActivityData.name;
+    // document.querySelector(".date-activity-title").innerHTML = dateActivityName;
 
-        var dateActivityName = dateActivityData.data[dateActivityRandomNumber].name;
-        document.querySelector(".date-activity-title").innerHTML = dateActivityName;
+    // if (dateActivityData.photo == null || dateActivityData.photo === "" || dateActivityData.photo == undefined) {
+    //   document.querySelector(".date-activity-pic").style.display = "none";
+    //   document.querySelector(".date-activity-pic-error").style.display = "flex";
+    // } else {
+    //   var dateActivityPhoto = dateActivityData.photo.images.large.url;
+    //   document.querySelector(".date-activity-pic").setAttribute("src", dateActivityPhoto);
+    //   document.querySelector(".date-activity-pic").style.display = "";
+    //   document.querySelector(".date-activity-pic-error").style.display = "none"
+    // }
 
-        if (dateActivityData.data[dateActivityRandomNumber].photo == null || dateActivityData.data[dateActivityRandomNumber].photo === "" || dateActivityData.data[dateActivityRandomNumber].photo == undefined) {
-          document.querySelector(".date-activity-pic").style.display = "none";
-          document.querySelector(".date-activity-pic-error").style.display = "flex";
-        } else {
-          var dateActivityPhoto = dateActivityData.data[dateActivityRandomNumber].photo.images.large.url;
-          document.querySelector(".date-activity-pic").setAttribute("src", dateActivityPhoto);
-          document.querySelector(".date-activity-pic").style.display = "";
-          document.querySelector(".date-activity-pic-error").style.display = "none"
-        }
+    // var dateActivityWebsite = dateActivityData.website;
+    // if (dateActivityWebsite === "" || dateActivityWebsite == null || dateActivityWebsite == undefined) {
+    //   document.querySelector(".date-activity-links-paragraph").innerHTML = "<a href='' target='_blank' class='date-activity-reviews'>TripAdvisor reviews</a>"
+    // } else {
+    //   document.querySelector(".date-activity-links-paragraph").innerHTML = "<a href='' target='_blank' class='date-activity-link'>Website</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href='' target='_blank' class='date-activity-reviews'>TripAdvisor reviews</a>"
+    //   document.querySelector(".date-activity-link").setAttribute("href", dateActivityWebsite);
+    // };
+    // var dateActivityTripAdvisor = dateActivityData.web_url;
+    // document.querySelector(".date-activity-reviews").setAttribute("href", dateActivityTripAdvisor);
 
-        var dateActivityWebsite = dateActivityData.data[dateActivityRandomNumber].website;
-        if (dateActivityWebsite === "" || dateActivityWebsite == null || dateActivityWebsite == undefined) {
-          document.querySelector(".date-activity-links-paragraph").innerHTML = "<a href='' target='_blank' class='date-activity-reviews'>TripAdvisor reviews</a>"
-        } else {
-          document.querySelector(".date-activity-links-paragraph").innerHTML = "<a href='' target='_blank' class='date-activity-link'>Website</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href='' target='_blank' class='date-activity-reviews'>TripAdvisor reviews</a>"
-          document.querySelector(".date-activity-link").setAttribute("href", dateActivityWebsite);
-        };
-        var dateActivityTripAdvisor = dateActivityData.data[dateActivityRandomNumber].web_url;
-        document.querySelector(".date-activity-reviews").setAttribute("href", dateActivityTripAdvisor);
+    // var dateActivityPhone = dateActivityData.phone;
+    // if (dateActivityPhone === "" || dateActivityPhone == null || dateActivityPhone == undefined) {
+    //   document.querySelector(".date-activity-phone").style.display = "none";
+    // } else {
+    //   document.querySelector(".date-activity-phone").style.display = "";
+    //   document.querySelector(".date-activity-phone").innerHTML = dateActivityPhone;
+    // };
 
-        var dateActivityPhone = dateActivityData.data[dateActivityRandomNumber].phone;
-        if (dateActivityPhone === "" || dateActivityPhone == null || dateActivityPhone == undefined) {
-          document.querySelector(".date-activity-phone").style.display = "none";
-        } else {
-          document.querySelector(".date-activity-phone").style.display = "";
-          document.querySelector(".date-activity-phone").innerHTML = dateActivityPhone;
-        };
+    // // DATE ACTIVITY ADDRESS EDITS:
+    // var dateActivityStreet1 = dateActivityData.address_obj.street1;
+    // var dateActivityCity = dateActivityData.address_obj.city;
+    // var dateActivityState = dateActivityData.address_obj.state;
+    // if (dateActivityStreet1 == null || dateActivityStreet1 == undefined || dateActivityStreet1 === "") {
+    //   document.querySelector(".date-activity-street-1").style.display = "none";
+    // } else {
+    //   document.querySelector(".date-activity-street-1").style.display = "";
+    //   document.querySelector(".date-activity-street-1").innerHTML = dateActivityStreet1;
+    
+    // if (dateActivityData.address_obj.postalcode == null || dateActivityData.address_obj.postalcode == undefined || dateActivityData.address_obj.postalcode === "") {
+    //   document.querySelector(".date-activity-city").innerHTML = dateActivityCity + ", " + dateActivityState;
+    // } else {
+    //   let dateActivityZip = (dateActivityData.address_obj.postalcode);
+    //   let dateActivityZipCut = dateActivityZip.split("-")[0];
+    //   document.querySelector(".date-activity-city").innerHTML = dateActivityCity + ", " + dateActivityState + " " + dateActivityZipCut;
+    // };
 
-        // ADDRESS EDITS:
-        var dateActivityStreet1 = dateActivityData.data[dateActivityRandomNumber].address_obj.street1;
-        var dateActivityCity = dateActivityData.data[dateActivityRandomNumber].address_obj.city;
-        var dateActivityState = dateActivityData.data[dateActivityRandomNumber].address_obj.state;
-        if (dateActivityStreet1 == null || dateActivityStreet1 == undefined || dateActivityStreet1 === "") {
-          document.querySelector(".date-activity-street-1").style.display = "none";
-        } else {
-          document.querySelector(".date-activity-street-1").style.display = "";
-          document.querySelector(".date-activity-street-1").innerHTML = dateActivityStreet1;
-        }
-
-        if (dateActivityData.data[dateActivityRandomNumber].address_obj.postalcode == null || dateActivityData.data[dateActivityRandomNumber].address_obj.postalcode == undefined || dateActivityData.data[dateActivityRandomNumber].address_obj.postalcode === "") {
-          document.querySelector(".date-activity-city").innerHTML = dateActivityCity + ", " + dateActivityState;
-        } else {
-          let dateActivityZip = (dateActivityData.data[dateActivityRandomNumber].address_obj.postalcode);
-          let dateActivityZipCut = dateActivityZip.split("-")[0];
-          document.querySelector(".date-activity-city").innerHTML = dateActivityCity + ", " + dateActivityState + " " + dateActivityZipCut;
-        };
-
-        //OTHER DATE ACTIVITY EDITS:
-        var dateActivityRating = dateActivityData.data[dateActivityRandomNumber].rating;
-        document.querySelector(".dadg4").innerHTML = dateActivityRating;
-
-        var dateActivityDescription = dateActivityData.data[dateActivityRandomNumber].description;
-        document.querySelector(".date-activity-description-paragraph").innerHTML = dateActivityDescription;
+    // //OTHER DATE ACTIVITY EDITS:
+    // var dateActivityRating = dateActivityData.rating;
+    // document.querySelector(".dadg4").innerHTML = dateActivityRating
+    // var dateActivityDescription = dateActivityData.description;
+    // document.querySelector(".date-activity-description-paragraph").innerHTML = dateActivityDescription
 
         //FIGURING OUT THE LOCATION OF THE RESTAURANT TO INPUT INTO THE DESSERT FUNCTION:
 
-        var dateActivityNeighborhoodInfoArray = dateActivityData.data[dateActivityRandomNumber].neighborhood_info;
+        // var dateActivityNeighborhoodInfoArray = dateActivityData.neighborhood_info;
 
-        function findTheRightLocation(x) {
-          if (x.location_id != "60763" && x.location_id != "15565668" && x.location_id != "7102352" && x.location_id != "15565677") {
-            return true;
-          }
-        };
+        // function findTheRightLocation(x) {
+        //   if (x.location_id != "60763" && x.location_id != "15565668" && x.location_id != "7102352" && x.location_id != "15565677") {
+        //     return true;
+        //   }
+        // };
 
-        function findTheSecondRightLocation(x) {
-          if (x.location_id != "60763") {
-            return true;
-          }
-        };
+        // function findTheSecondRightLocation(x) {
+        //   if (x.location_id != "60763") {
+        //     return true;
+        //   }
+        // };
 
-        if (dateActivityNeighborhoodInfoArray == null) {
-          var dateActivityLocation = "60763";
-        } else if (restWalkDistance.checked === false) {
-          var dateActivityLocation = "60763";
-        } else if (restWalkDistance.checked === true) {
-          if (dateActivityNeighborhoodInfoArray.findIndex(findTheRightLocation) === -1) {
-            var dateActivityLocation = "60763";
-          } else {
-            var dateActivityLocation = dateActivityData.data[dateActivityRandomNumber].neighborhood_info[dateActivityNeighborhoodInfoArray.findIndex(findTheRightLocation)].location_id;
-          }
-        } else {
-          var dateActivityLocation = dateActivityData.data[dateActivityRandomNumber].neighborhood_info[0].location_id;
-        }
+        // if (dateActivityNeighborhoodInfoArray == null) {
+        //   var dateActivityLocation = "60763";
+        // } else if (restWalkDistance.checked === false) {
+        //   var dateActivityLocation = "60763";
+        // } else if (restWalkDistance.checked === true) {
+        //   if (dateActivityNeighborhoodInfoArray.findIndex(findTheRightLocation) === -1) {
+        //     var dateActivityLocation = "60763";
+        //   } else {
+        //     var dateActivityLocation = dateActivityData.data[dateActivityRandomNumber].neighborhood_info[dateActivityNeighborhoodInfoArray.findIndex(findTheRightLocation)].location_id;
+        //   }
+        // } else {
+        //   var dateActivityLocation = dateActivityData.data[dateActivityRandomNumber].neighborhood_info[0].location_id;
+        // }
 
-        dateActivityLocationArray.push(dateActivityLocation);
+        // dateActivityLocationArray.push(dateActivityLocation);
 
         //This is the noFaceDemandsFood()function that is embedded within this Date Activity function.
         noFaceDemandsFood();
 
         function noFaceDemandsFood() {
           //Setting up all the fetch URL variables:
-          var restBaseURL = process.env.RESTBASEURL;
-          var parameterLocationId = "location_id=";
+          // var restBaseURL = process.env.RESTBASEURL;
+          // var parameterLocationId = "location_id=";
 
-          var parameterCurrency = "currency=";
-          var currency = "USD";
+          // var parameterCurrency = "currency=";
+          // var currency = "USD";
 
-          var parameterUnit = "lunit="
-          var lunit = "mi";
+          // var parameterUnit = "lunit="
+          // var lunit = "mi";
 
-          var parameterLimit = "limit=";
-          var limit = "30"
+          // var parameterLimit = "limit=";
+          // var limit = "30"
 
-          var parameterLang = "lang=";
-          var lang = "en_US";
+          // var parameterLang = "lang=";
+          // var lang = "en_US";
 
-          var parameterRestAPIKey = "rapidapi-key="
-          var restAPIKey = process.env.RESTAPIKEY;
+          // var parameterRestAPIKey = "rapidapi-key="
+          // var restAPIKey = process.env.RESTAPIKEY;
 
-          var parameterMinRating = "min_rating="
-          var minRating = "4";
+          // var parameterMinRating = "min_rating="
+          // var minRating = "4";
 
-          var parameterRestPrice = "prices_restaurants="
-          var parameterCombinedFoodKey = "combined_food="
-          var parameterRestTag = "restaurant_tagcategory="
+          // var parameterRestPrice = "prices_restaurants="
+          // var parameterCombinedFoodKey = "combined_food="
+          // var parameterRestTag = "restaurant_tagcategory="
 
-          var and = "&"
+          // var and = "&"
 
-          //This will identify the key for the price-range submitted by the user.
-          var priceRange = document.getElementById("price-range")
-          var userSubmittedPriceRange = priceRange.value;
-          if (userSubmittedPriceRange === "$") {
-            var pricesRestaurants = "10953";
-          } else if (userSubmittedPriceRange === "$$ - $$$") {
-            var pricesRestaurants = "10955";
-          } else if (userSubmittedPriceRange === "$$$$") {
-            var pricesRestaurants = "10954";
-          } else {
-            var pricesRestaurants = "all"
-          }
+          // //This will identify the key for the price-range submitted by the user.
+          // var priceRange = document.getElementById("price-range")
+          // var userSubmittedPriceRange = priceRange.value;
+          // if (userSubmittedPriceRange === "$") {
+          //   var pricesRestaurants = "10953";
+          // } else if (userSubmittedPriceRange === "$$ - $$$") {
+          //   var pricesRestaurants = "10955";
+          // } else if (userSubmittedPriceRange === "$$$$") {
+          //   var pricesRestaurants = "10954";
+          // } else {
+          //   var pricesRestaurants = "all"
+          // }
 
-          //This will identify the key that correlates with the cuisine search result.
-          function getKeyByCuisineValue(object, value) {
-            var x = Object.keys(object)
-            return x.find(function(key) {
-              return object[key].label.toLowerCase() === value.toLowerCase()
-            });
-          }
-          var userSubmittedCuisineSearch = document.getElementById("cuisine-selection").value;
+          // //This will identify the key that correlates with the cuisine search result.
+          // function getKeyByCuisineValue(object, value) {
+          //   var x = Object.keys(object)
+          //   return x.find(function(key) {
+          //     return object[key].label.toLowerCase() === value.toLowerCase()
+          //   });
+          // }
+          // var userSubmittedCuisineSearch = document.getElementById("cuisine-selection").value;
 
-          if (userSubmittedCuisineSearch === "") {
-            var cuisineSearchKey = "all";
-          } else {
-            var cuisineSearchKey = getKeyByCuisineValue(cuisineNames, userSubmittedCuisineSearch);
-          };
+          // if (userSubmittedCuisineSearch === "") {
+          //   var cuisineSearchKey = "all";
+          // } else {
+          //   var cuisineSearchKey = getKeyByCuisineValue(cuisineNames, userSubmittedCuisineSearch);
+          // };
 
           var restaurantFetchURL = restBaseURL + parameterLocationId + dateActivityLocation + and + parameterCurrency + currency + and + parameterUnit + lunit + and + parameterLimit + limit + and + parameterLang + lang + and + parameterRestAPIKey + restAPIKey + and + parameterMinRating + minRating + and + parameterRestPrice + pricesRestaurants + and + parameterCombinedFoodKey + cuisineSearchKey;
 
@@ -442,35 +592,35 @@ function callEverything() {
                   //FIGURING OUT THE LOCATION OF THE RESTAURANT TO INPUT INTO THE DESSERT FUNCTION:
                   //7102352=Midwest and 15565668=Tenderloin and 15565677=Downtown Manhattan
 
-                  var restaurantNeighborhoodInfoArray = restaurantData.data[firstPageRandomNumber].neighborhood_info;
+                  // var restaurantNeighborhoodInfoArray = restaurantData.data[firstPageRandomNumber].neighborhood_info;
 
-                  function findTheRestRightLocation(x) {
-                    if (x.location_id != "60763" && x.location_id != "15565668" && x.location_id != "7102352" && x.location_id != "15565677") {
-                      return true;
-                    }
-                  };
+                  // function findTheRestRightLocation(x) {
+                  //   if (x.location_id != "60763" && x.location_id != "15565668" && x.location_id != "7102352" && x.location_id != "15565677") {
+                  //     return true;
+                  //   }
+                  // };
 
-                  function findTheSecondRestRightLocation(x) {
-                    if (x.location_id != "60763") {
-                      return true;
-                    }
-                  };
+                  // function findTheSecondRestRightLocation(x) {
+                  //   if (x.location_id != "60763") {
+                  //     return true;
+                  //   }
+                  // };
 
-                  if (restaurantNeighborhoodInfoArray == null) {
-                    var restLocation = "60763";
-                  } else if (dessertWalkDistance.checked === false) {
-                    var restLocation = "60763";
-                  } else if (dessertWalkDistance.checked === true) {
-                    if (restaurantNeighborhoodInfoArray.findIndex(findTheRestRightLocation) === -1) {
-                      var restLocation = restaurantData.data[firstPageRandomNumber].neighborhood_info[restaurantNeighborhoodInfoArray.findIndex(findTheSecondRestRightLocation)].location_id;
-                    } else {
-                      var restLocation = restaurantData.data[firstPageRandomNumber].neighborhood_info[restaurantNeighborhoodInfoArray.findIndex(findTheRestRightLocation)].location_id;
-                    }
-                  } else {
-                    var restLocation = restaurantData.data[firstPageRandomNumber].neighborhood_info[0].location_id;
-                  }
+                  // if (restaurantNeighborhoodInfoArray == null) {
+                  //   var restLocation = "60763";
+                  // } else if (dessertWalkDistance.checked === false) {
+                  //   var restLocation = "60763";
+                  // } else if (dessertWalkDistance.checked === true) {
+                  //   if (restaurantNeighborhoodInfoArray.findIndex(findTheRestRightLocation) === -1) {
+                  //     var restLocation = restaurantData.data[firstPageRandomNumber].neighborhood_info[restaurantNeighborhoodInfoArray.findIndex(findTheSecondRestRightLocation)].location_id;
+                  //   } else {
+                  //     var restLocation = restaurantData.data[firstPageRandomNumber].neighborhood_info[restaurantNeighborhoodInfoArray.findIndex(findTheRestRightLocation)].location_id;
+                  //   }
+                  // } else {
+                  //   var restLocation = restaurantData.data[firstPageRandomNumber].neighborhood_info[0].location_id;
+                  // }
 
-                  restLocationArray.push(restLocation);
+                  // restLocationArray.push(restLocation);
 
                   //THIS IS THE DESSERT/TEA/COFFEE DIV:
                   if (userSubmittedExtraChatTime != "None" && dessertSaveCheckbox.checked === false) {
@@ -1149,45 +1299,45 @@ function callTheWeather() {
         matchedItem = weatherData.list[i]
       }
     }
-      // WEATHER SUMMARY DATA
-      var weatherDataDate = new Date(matchedItem.dt*1000);
-      var weatherDate = weatherDataDate.toLocaleString("en-US", {
-        dateStyle: "medium"
-      });
-      document.querySelector(".weather-date").innerHTML = weatherDate;
-      var weatherTemp = Math.round(matchedItem.main.temp);
-      if (measurementControl === "Celsius") {
-        document.querySelector(".temperature").innerHTML = weatherTemp + "&#176;C";
-      } else {
-        document.querySelector(".temperature").innerHTML = weatherTemp + "&#176;F";
-      }
-      // WEATHER IMAGE DATA
-      var weatherCode = matchedItem.weather[0].id;
-      if (weatherCode >= 800 && weatherCode <= 803) {
-        document.querySelector(".weather-div").style.backgroundImage = "url('images/blue-sky.jpg')"
-      } else if (weatherCode < 790 || weatherCode === 804) {
-        document.querySelector(".weather-div").style.backgroundImage = "url('images/rainy-sky-2.jpg')"
-      }
-      var weatherIcon = matchedItem.weather[0].icon;
-      var weatherIconURL = "https://openweathermap.org/img/wn/" + weatherIcon + "@2x.png"
-      var icon = document.querySelector(".weather-icon-pic");
-      icon.src = weatherIconURL
-      // WEATHER SUMMARY DATA CONTINUED
-      var weatherDescription = matchedItem.weather[0].description;
-      document.querySelector(".weather-description").innerHTML = weatherDescription;
-
-      // WEATHER DETAILS DATA
-      var highTemp = Math.round(matchedItem.main.temp_max);
-      var lowTemp = Math.round(matchedItem.main.temp_min);
-      if (measurementControl === "Celsius") {
-        document.querySelector(".high-temp-number").innerHTML = highTemp + "&#176;C";
-        document.querySelector(".low-temp-number").innerHTML = lowTemp + "&#176;C";
-      } else {
-        document.querySelector(".high-temp-number").innerHTML = highTemp + "&#176;F";
-        document.querySelector(".low-temp-number").innerHTML = lowTemp + "&#176;F";
-      }
-      var averageHumidity = Math.round(matchedItem.main.humidity);
-      document.querySelector(".avg-humidity-number").innerHTML = averageHumidity + "&#37;";
+      
+    // WEATHER SUMMARY DATA
+    var weatherDataDate = new Date(matchedItem.dt*1000);
+    var weatherDate = weatherDataDate.toLocaleString("en-US", {
+      dateStyle: "medium"
+    });
+    document.querySelector(".weather-date").innerHTML = weatherDate;
+    var weatherTemp = Math.round(matchedItem.main.temp);
+    if (measurementControl === "Celsius") {
+      document.querySelector(".temperature").innerHTML = weatherTemp + "&#176;C";
+    } else {
+      document.querySelector(".temperature").innerHTML = weatherTemp + "&#176;F";
+    }
+    // WEATHER IMAGE DATA
+    var weatherCode = matchedItem.weather[0].id;
+    if (weatherCode >= 800 && weatherCode <= 803) {
+      document.querySelector(".weather-div").style.backgroundImage = "url('images/blue-sky.jpg')"
+    } else if (weatherCode < 790 || weatherCode === 804) {
+      document.querySelector(".weather-div").style.backgroundImage = "url('images/rainy-sky-2.jpg')"
+    }
+    var weatherIcon = matchedItem.weather[0].icon;
+    var weatherIconURL = "https://openweathermap.org/img/wn/" + weatherIcon + "@2x.png"
+    var icon = document.querySelector(".weather-icon-pic");
+    icon.src = weatherIconURL
+    // WEATHER SUMMARY DATA CONTINUED
+    var weatherDescription = matchedItem.weather[0].description;
+    document.querySelector(".weather-description").innerHTML = weatherDescription;
+    // WEATHER DETAILS DATA
+    var highTemp = Math.round(matchedItem.main.temp_max);
+    var lowTemp = Math.round(matchedItem.main.temp_min);
+    if (measurementControl === "Celsius") {
+      document.querySelector(".high-temp-number").innerHTML = highTemp + "&#176;C";
+      document.querySelector(".low-temp-number").innerHTML = lowTemp + "&#176;C";
+    } else {
+      document.querySelector(".high-temp-number").innerHTML = highTemp + "&#176;F";
+      document.querySelector(".low-temp-number").innerHTML = lowTemp + "&#176;F";
+    }
+    var averageHumidity = Math.round(matchedItem.main.humidity);
+    document.querySelector(".avg-humidity-number").innerHTML = averageHumidity + "&#37;";
 
   } //This closes the forecastWeatherCallFunction().
 
