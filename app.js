@@ -358,7 +358,7 @@ function callEverything(){
     };
 
     // ADDRESS EDITS:
-    var restStreet1 = restaurantData.ddress_obj.street1;
+    var restStreet1 = restaurantData.address_obj.street1;
     var restCity = restaurantData.address_obj.city;
     var restState = restaurantData.address_obj.state;
 
