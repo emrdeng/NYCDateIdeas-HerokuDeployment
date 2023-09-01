@@ -210,7 +210,7 @@ app.get('/fetch-data', async (req, res) => {
           results.restaurant = restData;
       }
 
-      if (!dessertSave && restTagCategory) {
+      if (!dessertSave || restTagCategory) {
           const dessertData = await fetchDessertAPI(); // You'll need to implement fetchDessert()
           results.dessert = dessertData;
       }

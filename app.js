@@ -35,10 +35,6 @@ let dateActivityData;
 let restaurantData;
 let dessertData;
 
-console.log(`dateActivity: ${dateActivityData}`)
-console.log(`restaurantData: ${restaurantData}`)
-console.log(`dessertData: ${dessertData}`)
-
 // Function heartAnimation This is the animation of the heart button on hover.
 function heartAnimation() {
   var heartElement = heartBtn.classList;
@@ -80,18 +76,17 @@ function sendCheckboxDataToBackend() {
   })
   .then(response => response.json())
   .then(data => {
+    console.log(`dateSave is: ${dateSaveCheckbox.checked}`)
+    console.log(`restSave is: ${restSaveCheckbox.checked}`)
+    console.log(`dessertSave is: ${dessertSaveCheckbox.checked}`)
+    console.log(`restWalkDistance is: ${restWalkDistance.checked}`)
+    console.log(`dessertWalkDistance is: ${dessertWalkDistance.checked}`)
     console.log('Success:', data);
   })
   .catch(error => {
     console.error('Error:', error);
   });
 }
-
-console.log(`dateSave is: ${dateSaveCheckbox.checked}`)
-console.log(`restSave is: ${restSaveCheckbox.checked}`)
-console.log(`dessertSave is: ${dessertSaveCheckbox.checked}`)
-console.log(`restWalkDistance is: ${restWalkDistance.checked}`)
-console.log(`dessertWalkDistance is: ${dessertWalkDistance.checked}`)
 
 /////////////// SEARCH BAR: ////////////////////
 var cuisineSearch = document.getElementById("cuisine-selection");
@@ -223,6 +218,10 @@ function callEverything(){
       if (data.dateActivity) dateActivityData = data.dateActivity;
       if (data.restaurant) restaurantData = data.restaurant;
       if (data.dessert) dessertData = data.dessert;
+
+      console.log(`dateActivity: ${dateActivityData}`)
+      console.log(`restaurantData: ${restaurantData}`)
+      console.log(`dessertData: ${dessertData}`)
 
       updateFrontendDisplay();
     })
