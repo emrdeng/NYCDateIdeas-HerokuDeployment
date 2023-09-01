@@ -142,8 +142,14 @@ app.post('/checkbox-info', (req, res) => {
     dessertWalkDistance 
   } = req.body;
 
+  console.log(`dateSave is: ${dateSave}`)
+  console.log(`restSave is: ${restSave}`)
+  console.log(`dessertSave is: ${dessertSave}`)
+  console.log(`restWalkDistance is: ${restWalkDistance}`)
+  console.log(`dessertWalkDistance is: ${dessertWalkDistance}`)
+
   // Send a response back to the frontend
-  res.json({ message: 'Data received successfully' });
+  res.json({ message: 'checkbox data received successfully' });
 });
 
 ///////////////////// ONE SUBMIT BUTTON POSTING GLOBAL VARIABLES FROM THE USER FORM: //////////////////////////////////
