@@ -15,11 +15,11 @@ const restWalkDistance = document.querySelector(".rest-walking-checkbox");
 const dessertWalkDistance = document.querySelector(".dessert-walking-checkbox");
 
 // EVENT LISTENERS FOR THE DATING STATUSES:
-dateSaveCheckbox.addEventListener('click', sendCheckboxDataToBackend);
-restSaveCheckbox.addEventListener('click', sendCheckboxDataToBackend);
-dessertSaveCheckbox.addEventListener('click', sendCheckboxDataToBackend);
-restWalkDistance.addEventListener('click', sendCheckboxDataToBackend);
-dessertWalkDistance.addEventListener('click', sendCheckboxDataToBackend);
+// dateSaveCheckbox.addEventListener('click', sendCheckboxDataToBackend);
+// restSaveCheckbox.addEventListener('click', sendCheckboxDataToBackend);
+// dessertSaveCheckbox.addEventListener('click', sendCheckboxDataToBackend);
+// restWalkDistance.addEventListener('click', sendCheckboxDataToBackend);
+// dessertWalkDistance.addEventListener('click', sendCheckboxDataToBackend);
 
 // EVENT LISTENERS FOR THE SUBMIT BUTTON:
 // submitBtn.addEventListener("click", callEverything);
@@ -58,35 +58,35 @@ function addBtnMouseOut() {
 }
 
 /////////////// THIS WILL SEND THE DATING STATUSES TO THE BACKEND: /////////////////
-function sendCheckboxDataToBackend() {
-  const data = {
-    dateSave: dateSaveCheckbox.checked,
-    restSave: restSaveCheckbox.checked,
-    dessertSave: dessertSaveCheckbox.checked,
-    restWalkDistance: restWalkDistance.checked,
-    dessertWalkDistance: dessertWalkDistance.checked
-  };
+// function sendCheckboxDataToBackend() {
+//   const data = {
+//     dateSave: dateSaveCheckbox.checked,
+//     restSave: restSaveCheckbox.checked,
+//     dessertSave: dessertSaveCheckbox.checked,
+//     restWalkDistance: restWalkDistance.checked,
+//     dessertWalkDistance: dessertWalkDistance.checked
+//   };
 
-  fetch('/checkbox-info', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data)
-  })
-  .then(response => response.json())
-  .then(data => {
-    console.log(`dateSave is: ${dateSaveCheckbox.checked}`)
-    console.log(`restSave is: ${restSaveCheckbox.checked}`)
-    console.log(`dessertSave is: ${dessertSaveCheckbox.checked}`)
-    console.log(`restWalkDistance is: ${restWalkDistance.checked}`)
-    console.log(`dessertWalkDistance is: ${dessertWalkDistance.checked}`)
-    console.log('Success:', data);
-  })
-  .catch(error => {
-    console.error('Error:', error);
-  });
-}
+//   fetch('/checkbox-info', {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/json',
+//     },
+//     body: JSON.stringify(data)
+//   })
+//   .then(response => response.json())
+//   .then(data => {
+//     console.log(`dateSave is: ${dateSaveCheckbox.checked}`)
+//     console.log(`restSave is: ${restSaveCheckbox.checked}`)
+//     console.log(`dessertSave is: ${dessertSaveCheckbox.checked}`)
+//     console.log(`restWalkDistance is: ${restWalkDistance.checked}`)
+//     console.log(`dessertWalkDistance is: ${dessertWalkDistance.checked}`)
+//     console.log('Success:', data);
+//   })
+//   .catch(error => {
+//     console.error('Error:', error);
+//   });
+// }
 
 /////////////// SEARCH BAR: ////////////////////
 var cuisineSearch = document.getElementById("cuisine-selection");
@@ -179,39 +179,66 @@ function callEverything(){
     document.querySelector(".rightmost-container").style.gridTemplateColumns = "1fr 1fr 1fr";
   }
 
-  ////////////////////////////HANDLES THE POSTING OF THE FORM SUBMISSION: ///////////////////
+  ///////////////////////ALL THE INFORMATION THAT GETS SENT TO THE BACKEND FOR API QUERIES: ///////////////////
   var priceRange = document.getElementById("price-range")
   var userSubmittedPriceRange = priceRange.value;
+
+  //This gets sent over to backend for restaurant and dessert API
+  var pricesRestaurants; 
+
+  if (userSubmittedPriceRange === "$") {
+    pricesRestaurants = "10953";
+  } else if (userSubmittedPriceRange === "$$ - $$$") {
+    pricesRestaurants = "10955";
+  } else if (userSubmittedPriceRange === "$$$$") {
+    pricesRestaurants = "10954";
+  } else {
+    pricesRestaurants = "all"
+  }
   
+  //This gets sent over to backend for restaurant API
   var userSubmittedCuisineSearch = document.getElementById("cuisine-selection").value;
 
-  var userSubmittedExtraChatTime = document.getElementById("extra-chat-time").value;
-  
-  const formDataToSend = {
-    userSubmittedPriceRange: userSubmittedPriceRange,
-    userSubmittedCuisineSearch: userSubmittedCuisineSearch,
-    userSubmittedExtraChatTime: userSubmittedExtraChatTime
-  };
+  //This gets sent over to backend for dessert API
+  var restTagCategory; 
 
-  fetch("/form-submit", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(formDataToSend)
-    })
-    .then(response => response.json())
-    .then(data => {
-      // Handle the response from the server
-      console.log(data);
-    })
-    .catch(error => {
-      console.error("Error:", error);
-    });
+  if (userSubmittedExtraChatTime === "Bars & Pubs") {
+    restTagCategory = "11776";
+  } else if (userSubmittedExtraChatTime === "Coffee & Tea") {
+    restTagCategory = "9900";
+  } else if (userSubmittedExtraChatTime === "Dessert") {
+    restTagCategory = "9909,9901";
+  } else if (userSubmittedExtraChatTime === "Any") {
+    restTagCategory = "11776,9900,9909,9901";
+  } else {
+    restTagCategory = false
+  }
+
+  // const formDataToSend = {
+  //   userSubmittedPriceRange: userSubmittedPriceRange,
+  //   userSubmittedCuisineSearch: userSubmittedCuisineSearch,
+  //   userSubmittedExtraChatTime: userSubmittedExtraChatTime
+  // };
+
+  // fetch("/form-submit", {
+  //   method: "POST",
+  //   headers: {
+  //     "Content-Type": "application/json"
+  //   },
+  //   body: JSON.stringify(formDataToSend)
+  //   })
+  //   .then(response => response.json())
+  //   .then(data => {
+  //     // Handle the response from the server
+  //     console.log(data);
+  //   })
+  //   .catch(error => {
+  //     console.error("Error:", error);
+  //   });
 
   ////////////////////////////////HANDLES THE FETCHING OF DETAILS: ///////////////////
 
-  fetch('/fetch-data')
+  fetch(`/fetch-data?dateSave=${dateSaveCheckbox.checked}&restSave=${restSaveCheckbox.checked}&dessertSave=${dessertSaveCheckbox.checked}&restWalkDistance=${restWalkDistance.checked}&dessertWalkDistance=${dessertWalkDistance.checked}&pricesRestaurants=${pricesRestaurants}&userSubmittedCuisineSearch=${userSubmittedCuisineSearch}&restTagCategory=${restTagCategory}`)
     .then(response => response.json())
     .then(data => {
       // Only update parts of the state that are present in the response
