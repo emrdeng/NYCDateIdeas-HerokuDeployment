@@ -211,6 +211,8 @@ app.get('/fetch-data', async (req, res) => {
       }
 
       if (!dessertSave || restTagCategory) {
+          console.log(`dessertSave is ${dessertSave}`)
+          console.log(`restTagCategory is ${restTagCategory}`)
           const dessertData = await fetchDessertAPI(); // You'll need to implement fetchDessert()
           results.dessert = dessertData;
       }
