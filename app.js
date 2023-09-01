@@ -58,7 +58,7 @@ function fetchData() {
       .then(response => response.json())
       .then(data => {
         cuisineNames = data;
-          attachAutocomplete(cuisineNames.CUISINENAMESJSON);
+        attachAutocomplete(cuisineNames.CUISINENAMESJSON);
       });
 }
 
@@ -136,43 +136,6 @@ function callEverything() {
   }
 
   //DATE ACTIVITY DIV: This will run the date activity information:
-  //Setting up all the fetch URL variables:
-  var dateActivityBaseURL = process.env.DATEACTIVITYBASEURL;
-  var parameterLocationId = "location_id=";
-  var locationId = "60763";
-
-  var parameterCurrency = "currency=";
-  var currency = "USD";
-
-  var parameterUnit = "lunit="
-  var lunit = "mi";
-
-  var parameterLimit = "limit=";
-  var limit = "30"
-
-  var parameterLang = "lang=";
-  var lang = "en_US";
-
-  var parameterRestAPIKey = "rapidapi-key="
-  var restAPIKey = process.env.RESTAPIKEY;
-
-  var parameterMinRating = "min_rating="
-  var minRating = "4";
-
-  var parameterOffset = "offset=";
-
-  var parameterSort = "sort="
-  var sort = "recommended"
-
-  var parameterSubCategory = "subcategory="
-
-  var and = "&"
-
-  var subcategoryArray = ["40", "41", "49", "20", "0", "56", "61", "58", "57"];
-  var subcategoryRandomNumber = Math.round(Math.random() * (subcategoryArray.length - 1));
-  var dateActivitySubCategory = subcategoryArray[subcategoryRandomNumber];
-
-  console.log(dateActivityBaseURL)
 
   if (dateSaveCheckbox.checked === false) {
     return dateHappily();
@@ -190,36 +153,14 @@ function callEverything() {
   //This will be the function that houses the Javascript Fetch for the Date Activity panel (incl. the random number offset):
 
   function dateHappily() {
-    //This will identify a random number for the offset:
-    var dateActivityRandomOffsetNumber = Math.round(Math.random() * 50);
 
-    var dateActivityFetchURL = dateActivityBaseURL + parameterLocationId + locationId + and + parameterSort + sort + and + parameterSubCategory + dateActivitySubCategory + and + parameterCurrency + currency + and + parameterUnit + lunit + and + parameterLimit + limit + and + parameterLang + lang + and + parameterRestAPIKey + restAPIKey + and + parameterMinRating + minRating + and + parameterOffset + dateActivityRandomOffsetNumber;
+    fetch("https://nyc-date-planner-224c86480c8a.herokuapp.com/fetch-date-activity")
+      .then(response => response.json())
+      .then(dateActivityData => {
+        console.log("dateActivityFetched!")
+        console.log(dateActivityData)
+      })
 
-    const data = null;
-    const xhr = new XMLHttpRequest();
-
-    xhr.open("GET", dateActivityFetchURL, true);
-    xhr.addEventListener("readystatechange", dateActivityCallFunction);
-
-    function dateActivityCallFunction() {
-      if (this.readyState === this.DONE) {
-        var dateActivityData = JSON.parse(this.responseText);
-        var dateActivityPage1Results = dateActivityData.paging.results;
-        var dateActivityTotalResults = dateActivityData.paging.total_results;
-        var dateActivityActualArrayResults = dateActivityData.data.length;
-
-        if (dateActivityPage1Results === 0) {
-          return dateHappily();
-        };
-
-        var dateActivityRandomNumber = Math.round(Math.random() * (dateActivityActualArrayResults - 1));
-        if (Object.keys(dateActivityData.data[dateActivityRandomNumber]).length < 30) {
-          if (dateActivityData.data[dateActivityRandomNumber + 1] == null || dateActivityData.data[dateActivityRandomNumber + 1] == undefined) {
-            dateActivityRandomNumber = dateActivityRandomNumber - 1;
-          } else {
-            dateActivityRandomNumber = dateActivityRandomNumber + 1;
-          }
-        };
 
         var dateActivityName = dateActivityData.data[dateActivityRandomNumber].name;
         document.querySelector(".date-activity-title").innerHTML = dateActivityName;
@@ -683,9 +624,6 @@ function callEverything() {
 
         }; //This is the end of the function noFaceDemandsFood().
 
-      }; //End of the if statement which determines ready state for dateActivityCallFunction().
-    }; //This is the end of the xhr load function called: dateActivityCallFunction().
-    xhr.send(); //This is the xhr.send() for the dateActivityCallFunction() function.
   }; //This is the end of the dateHappily() function.
 
 } //This is the end of the callEverything() function.
