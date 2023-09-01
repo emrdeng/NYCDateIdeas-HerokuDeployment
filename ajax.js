@@ -321,9 +321,15 @@ async function fetchRestaurantAPI(){
     }
 
     return data.data[firstPageRandomNumber];
-    
+
   } catch(error) {
     console.error("Error fetching restaurant:", error);
     throw error; // or handle the error as appropriate for your use case
   }
 }
+
+////////////////////////////////////////// MY PORT: ///////////////////////////////////
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
