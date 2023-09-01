@@ -61,8 +61,8 @@ function fetchData() {
       });
 }
 
-function attachAutocomplete(cuisineNames) {
-    var sortedCuisineNames = Object.values(cuisineNames).map(item => item.label).sort();
+function attachAutocomplete(cuisineJSON) {
+    var sortedCuisineNames = Object.values(cuisineJSON).map(item => item.label).sort();
 
     cuisineSearch.addEventListener("keyup", function(e) {
         removeElements();
@@ -78,7 +78,6 @@ function attachAutocomplete(cuisineNames) {
             var listCuisine = document.createElement("li");
             listCuisine.classList.add("list-items");
             listCuisine.style.cursor = "pointer";
-            // listCuisine.setAttribute("onclick", "displayNames('" + i + "')");
             listCuisine.addEventListener("click", function() {
               displayNames(i);
           });
