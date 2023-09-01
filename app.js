@@ -53,11 +53,11 @@ cuisineSearch.addEventListener("focus", fetchData, { once: true });
 function fetchData() {
   console.log("fetchData is running!")
   console.log(`cusineNamesJSON environment variable is: ${process.env.CUISINENAMESJSON}`)
-  fetch(process.env.CUISINENAMESJSON)
+  fetch("https://nyc-date-planner-224c86480c8a.herokuapp.com/env-vars")
       .then(response => response.json())
       .then(data => {
           cuisineNames = data;
-          attachAutocomplete();
+          attachAutocomplete(cuisineNames.CUISINENAMESJSON);
       });
 }
 
