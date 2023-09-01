@@ -159,7 +159,7 @@ app.get('/fetch-data', async (req, res) => {
       if (dessertSave === "false"&& restTagCategory  !== "false") {
         console.log(`dessertSave is ${dessertSave}`)
         console.log(`restTagCategory is ${restTagCategory}`)
-          const dessertData = await fetchDessertAPI(restLocation, pricesRestaurants, restTagCategory);
+          const dessertData = await fetchDessertAPI(dateActivityLocation, restLocation, pricesRestaurants, restTagCategory);
           results.dessert = dessertData;
       }
 
@@ -318,7 +318,7 @@ async function fetchRestaurantAPI(dateActivityLocation, pricesRestaurants, cuisi
 }
 
 ////////////////////////////////////////// DESSERT API: ///////////////////////////////////
-async function fetchDessertAPI(restLocation, pricesRestaurants, restTagCategory){
+async function fetchDessertAPI(dateActivityLocation, restLocation, pricesRestaurants, restTagCategory){
   restLocation = restLocation || dateActivityLocation || "60763";
 
   var dessertFetchURL = restBaseURL + parameterLocationId + restLocation + and + parameterCurrency + currency + and + parameterUnit + lunit + and + parameterLimit + limit + and + parameterLang + lang + and + parameterRestAPIKey + restAPIKey + and + parameterMinRating + minRating + and + parameterRestPrice + pricesRestaurants + and + parameterRestTag + restTagCategory;
