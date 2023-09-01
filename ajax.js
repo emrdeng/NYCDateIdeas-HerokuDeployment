@@ -5,6 +5,7 @@ const express = require("express");
 
 const app = express();
 
+app.use(express.json());
 app.use(express.static(__dirname));
 
 app.get("/", function (req, res){
@@ -129,10 +130,15 @@ var restAPIKey = process.env.RESTAPIKEY;
 
 var parameterRestPrice = "prices_restaurants=";
 var parameterCombinedFoodKey = "combined_food=";
-var parameterRestTag = "restaurant_tagcategory=";
 
 var dateActivityLocation;
 
+///////////////// DESSERT API PARAMETERS://///////////////////
+var parameterRestTag = "restaurant_tagcategory=";
+
+var restTagCategory;
+
+var restLocation;
 
 /////////////////// HANDLES DATING STATUS DETAIL THAT DETERMINES WHAT FUNCTIONS TO RUN ////////////////////////////
 app.post('/checkbox-info', (req, res) => {
@@ -151,7 +157,7 @@ app.post('/checkbox-info', (req, res) => {
 
 ///////////////////// ONE SUBMIT BUTTON POSTING GLOBAL VARIABLES FROM THE USER FORM: //////////////////////////////////
 app.post('/form-submit',(req, res) => {
-  const { userSubmittedPriceRange, userSubmittedCuisineSearch } = req.body;
+  const { userSubmittedPriceRange, userSubmittedCuisineSearch, userSubmittedExtraChatTime } = req.body;
 
   if (userSubmittedPriceRange === "$") {
     pricesRestaurants = "10953";
@@ -161,6 +167,16 @@ app.post('/form-submit',(req, res) => {
     pricesRestaurants = "10954";
   } else {
     pricesRestaurants = "all"
+  }
+
+  if (userSubmittedExtraChatTime === "Bars & Pubs") {
+    restTagCategory = "11776";
+  } else if (userSubmittedExtraChatTime === "Coffee & Tea") {
+    restTagCategory = "9900";
+  } else if (userSubmittedExtraChatTime === "Dessert") {
+    restTagCategory = "9909,9901";
+  } else if (userSubmittedExtraChatTime === "Any") {
+    restTagCategory = "11776,9900,9909,9901";
   }
 
   //This will identify the key that correlates with the cuisine search result.
@@ -176,6 +192,8 @@ app.post('/form-submit',(req, res) => {
   } else {
     cuisineSearchKey = getKeyByCuisineValue(cuisineNames, userSubmittedCuisineSearch);
   };
+
+  res.json({ success: true, message: 'Data processed' });
 })
 
 ///////////////////// ONE SUBMIT BUTTON FETCHING EVERYTHING: /////////////////////////////////////////////
@@ -194,7 +212,7 @@ app.get('/fetch-data', async (req, res) => {
       }
 
       if (!dessertSave) {
-          const dessertData = await fetchDessert(); // You'll need to implement fetchDessert()
+          const dessertData = await fetchDessertAPI(); // You'll need to implement fetchDessert()
           results.dessert = dessertData;
       }
 
@@ -279,6 +297,7 @@ async function fetchRestaurantAPI(){
     const data = await response.json();
 
     if (data.paging.results === 0) {
+      restLocation = "60763";
       return null;  // Function to refetch
     }
 
@@ -304,13 +323,13 @@ async function fetchRestaurantAPI(){
     };
 
     if (restaurantNeighborhoodInfoArray == null) {
-      // So if the date activity returns no neighborhood information, then just keep dateActivityLocation as 60763
+      // So if the restaurant returns no neighborhood information, then just keep restLocation as 60763
       restLocation = "60763";
     } else if (dessertWalkDistance === false) {
-      // If restaurant does NOT have to be within walking distance, then keep dateActivityLocation as 60763
+      // If dessert does NOT have to be within walking distance, then keep restLocation as 60763
       dateActivityLocation = "60763";
     } else if (dessertWalkDistance === true) {
-      // IF the restaurant HAS TO BE within walking distance of the date activity, then it will search through the dateActivityNeighborhoodInfoArray's "location_id". And if returns an index that isn't -1, it will use that location as the new dateActivityLocation. If it returns a -1, it will stick with location of 60763.
+      // IF the dessert HAS TO BE within walking distance of the restaurant, then it will search through the restaurantNeighborhoodInfoArray's "location_id". And if returns an index that isn't -1, it will use that location as the new restLocation. If it returns a -1, it will stick with location of 60763.
         if (restaurantNeighborhoodInfoArray.findIndex(findTheRestRightLocation) === -1) {
           restLocation = "60763";
         } else {
@@ -324,6 +343,39 @@ async function fetchRestaurantAPI(){
 
   } catch(error) {
     console.error("Error fetching restaurant:", error);
+    throw error; // or handle the error as appropriate for your use case
+  }
+}
+
+////////////////////////////////////////// DESSERT API: ///////////////////////////////////
+async function fetchDessertAPI(){
+
+  var dessertFetchURL = restBaseURL + parameterLocationId + restLocation + and + parameterCurrency + currency + and + parameterUnit + lunit + and + parameterLimit + limit + and + parameterLang + lang + and + parameterRestAPIKey + restAPIKey + and + parameterMinRating + minRating + and + parameterRestPrice + pricesRestaurants + and + parameterRestTag + restTagCategory;
+
+  try{
+    const response = await fetch(dessertFetchURL);
+    const data = await response.json();
+
+    if (data.paging.results === 0) {
+      return null;  // Function to refetch
+    }
+
+    // Ensure we have valid data to pick from
+    let dessertActualArrayResults = data.data.length;
+    let firstPageRandomNumber = Math.round(Math.random() * (dessertActualArrayResults - 1));
+
+    if (Object.keys(data.data[firstPageRandomNumber]).length < 30) {
+      if (data.data[firstPageRandomNumber + 1] == null || data.data[firstPageRandomNumber + 1] == undefined) {
+        firstPageRandomNumber = firstPageRandomNumber - 1;
+      } else {
+        firstPageRandomNumber = firstPageRandomNumber + 1;
+      }
+    };
+
+    return data.data[firstPageRandomNumber];
+
+  } catch(error) {
+    console.error("Error fetching dessert:", error);
     throw error; // or handle the error as appropriate for your use case
   }
 }

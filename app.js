@@ -36,8 +36,8 @@ var restLocationArray = [];
 // GLOBAL PARAMETERS FOR THE FRONT END MEMORY OF THE DATE DETAILS:
 
 let dateActivityData;
-let restaurant;
-let dessert;
+let restaurantData;
+let dessertData;
 
 // Function heartAnimation This is the animation of the heart button on hover.
 function heartAnimation() {
@@ -147,7 +147,7 @@ function removeElements() {
 
 
 //This is the overarching button formula that will address everything.
-function callEverything() {
+function callEverything(){
   // This identifies the key for the rest-tag-category parameter based on the user submitted item.
   //This will also hide the extra chat time div if the user submitted "none".
   var userSubmittedExtraChatTime = document.getElementById("extra-chat-time").value;
@@ -199,11 +199,14 @@ function callEverything() {
   var priceRange = document.getElementById("price-range")
   var userSubmittedPriceRange = priceRange.value;
   
-  var userSubmittedCuisineSearch = document.getElementById("cuisine-selection").val
+  var userSubmittedCuisineSearch = document.getElementById("cuisine-selection").value;
+
+  var userSubmittedExtraChatTime = document.getElementById("extra-chat-time").value;
   
   const formDataToSend = {
     userSubmittedPriceRange: userSubmittedPriceRange,
-    userSubmittedCuisineSearch: userSubmittedCuisineSearch
+    userSubmittedCuisineSearch: userSubmittedCuisineSearch,
+    userSubmittedExtraChatTime: userSubmittedExtraChatTime
   };
 
   fetch("/form-submit", {
@@ -229,8 +232,8 @@ function callEverything() {
     .then(data => {
       // Only update parts of the state that are present in the response
       if (data.dateActivity) dateActivityData = data.dateActivity;
-      if (data.restaurant) restaurant = data.restaurant;
-      if (data.dessert) dessert = data.dessert;
+      if (data.restaurant) restaurantData = data.restaurant;
+      if (data.dessert) dessertData = data.dessert;
 
       updateFrontendDisplay();
     })
@@ -296,916 +299,172 @@ function callEverything() {
     var dateActivityDescription = dateActivityData.description;
     document.querySelector(".date-activity-description-paragraph").innerHTML = dateActivityDescription
 
-  } // End of the updateFrontendDisplay()
-    
-    
 
-  function dateHappily() {
-
-    // THIS HANDLES THE FETCHING OF THE DATE ACTIVITY FROM THE BACKEND:
-    // let dateActivityData;
-
-    // fetch("https://nyc-date-planner-224c86480c8a.herokuapp.com/fetch-date-activity")
-    //   .then(response => response.json())
-    //   .then(dateActivityJSON => {
-    //     console.log("dateActivityFetched!")
-    //     console.log(dateActivityJSON)
-    //     dateActivityData = dateActivityJSON
-    //   })
-    //   .catch(error => {
-    //     console.error("There was an error fetching the date activity data:", error);
-    //   });
-    
-    // // THIS HANDLES THE FETCHED DATE ACTIVITY FROM BACK END AND PUTS IT INTO THE FRONT END:
-    // var dateActivityName = dateActivityData.name;
-    // document.querySelector(".date-activity-title").innerHTML = dateActivityName;
-
-    // if (dateActivityData.photo == null || dateActivityData.photo === "" || dateActivityData.photo == undefined) {
-    //   document.querySelector(".date-activity-pic").style.display = "none";
-    //   document.querySelector(".date-activity-pic-error").style.display = "flex";
-    // } else {
-    //   var dateActivityPhoto = dateActivityData.photo.images.large.url;
-    //   document.querySelector(".date-activity-pic").setAttribute("src", dateActivityPhoto);
-    //   document.querySelector(".date-activity-pic").style.display = "";
-    //   document.querySelector(".date-activity-pic-error").style.display = "none"
-    // }
-
-    // var dateActivityWebsite = dateActivityData.website;
-    // if (dateActivityWebsite === "" || dateActivityWebsite == null || dateActivityWebsite == undefined) {
-    //   document.querySelector(".date-activity-links-paragraph").innerHTML = "<a href='' target='_blank' class='date-activity-reviews'>TripAdvisor reviews</a>"
-    // } else {
-    //   document.querySelector(".date-activity-links-paragraph").innerHTML = "<a href='' target='_blank' class='date-activity-link'>Website</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href='' target='_blank' class='date-activity-reviews'>TripAdvisor reviews</a>"
-    //   document.querySelector(".date-activity-link").setAttribute("href", dateActivityWebsite);
-    // };
-    // var dateActivityTripAdvisor = dateActivityData.web_url;
-    // document.querySelector(".date-activity-reviews").setAttribute("href", dateActivityTripAdvisor);
-
-    // var dateActivityPhone = dateActivityData.phone;
-    // if (dateActivityPhone === "" || dateActivityPhone == null || dateActivityPhone == undefined) {
-    //   document.querySelector(".date-activity-phone").style.display = "none";
-    // } else {
-    //   document.querySelector(".date-activity-phone").style.display = "";
-    //   document.querySelector(".date-activity-phone").innerHTML = dateActivityPhone;
-    // };
-
-    // // DATE ACTIVITY ADDRESS EDITS:
-    // var dateActivityStreet1 = dateActivityData.address_obj.street1;
-    // var dateActivityCity = dateActivityData.address_obj.city;
-    // var dateActivityState = dateActivityData.address_obj.state;
-    // if (dateActivityStreet1 == null || dateActivityStreet1 == undefined || dateActivityStreet1 === "") {
-    //   document.querySelector(".date-activity-street-1").style.display = "none";
-    // } else {
-    //   document.querySelector(".date-activity-street-1").style.display = "";
-    //   document.querySelector(".date-activity-street-1").innerHTML = dateActivityStreet1;
-    
-    // if (dateActivityData.address_obj.postalcode == null || dateActivityData.address_obj.postalcode == undefined || dateActivityData.address_obj.postalcode === "") {
-    //   document.querySelector(".date-activity-city").innerHTML = dateActivityCity + ", " + dateActivityState;
-    // } else {
-    //   let dateActivityZip = (dateActivityData.address_obj.postalcode);
-    //   let dateActivityZipCut = dateActivityZip.split("-")[0];
-    //   document.querySelector(".date-activity-city").innerHTML = dateActivityCity + ", " + dateActivityState + " " + dateActivityZipCut;
-    // };
-
-    // //OTHER DATE ACTIVITY EDITS:
-    // var dateActivityRating = dateActivityData.rating;
-    // document.querySelector(".dadg4").innerHTML = dateActivityRating
-    // var dateActivityDescription = dateActivityData.description;
-    // document.querySelector(".date-activity-description-paragraph").innerHTML = dateActivityDescription
-
-        //FIGURING OUT THE LOCATION OF THE RESTAURANT TO INPUT INTO THE DESSERT FUNCTION:
-
-        // var dateActivityNeighborhoodInfoArray = dateActivityData.neighborhood_info;
-
-        // function findTheRightLocation(x) {
-        //   if (x.location_id != "60763" && x.location_id != "15565668" && x.location_id != "7102352" && x.location_id != "15565677") {
-        //     return true;
-        //   }
-        // };
-
-        // function findTheSecondRightLocation(x) {
-        //   if (x.location_id != "60763") {
-        //     return true;
-        //   }
-        // };
-
-        // if (dateActivityNeighborhoodInfoArray == null) {
-        //   var dateActivityLocation = "60763";
-        // } else if (restWalkDistance.checked === false) {
-        //   var dateActivityLocation = "60763";
-        // } else if (restWalkDistance.checked === true) {
-        //   if (dateActivityNeighborhoodInfoArray.findIndex(findTheRightLocation) === -1) {
-        //     var dateActivityLocation = "60763";
-        //   } else {
-        //     var dateActivityLocation = dateActivityData.data[dateActivityRandomNumber].neighborhood_info[dateActivityNeighborhoodInfoArray.findIndex(findTheRightLocation)].location_id;
-        //   }
-        // } else {
-        //   var dateActivityLocation = dateActivityData.data[dateActivityRandomNumber].neighborhood_info[0].location_id;
-        // }
-
-        // dateActivityLocationArray.push(dateActivityLocation);
-
-        //This is the noFaceDemandsFood()function that is embedded within this Date Activity function.
-        noFaceDemandsFood();
-
-        function noFaceDemandsFood() {
-          //Setting up all the fetch URL variables:
-          // var restBaseURL = process.env.RESTBASEURL;
-          // var parameterLocationId = "location_id=";
-
-          // var parameterCurrency = "currency=";
-          // var currency = "USD";
-
-          // var parameterUnit = "lunit="
-          // var lunit = "mi";
-
-          // var parameterLimit = "limit=";
-          // var limit = "30"
-
-          // var parameterLang = "lang=";
-          // var lang = "en_US";
-
-          // var parameterRestAPIKey = "rapidapi-key="
-          // var restAPIKey = process.env.RESTAPIKEY;
-
-          // var parameterMinRating = "min_rating="
-          // var minRating = "4";
-
-          // var parameterRestPrice = "prices_restaurants="
-          // var parameterCombinedFoodKey = "combined_food="
-          // var parameterRestTag = "restaurant_tagcategory="
-
-          // var and = "&"
-
-          // //This will identify the key for the price-range submitted by the user.
-          // var priceRange = document.getElementById("price-range")
-          // var userSubmittedPriceRange = priceRange.value;
-          // if (userSubmittedPriceRange === "$") {
-          //   var pricesRestaurants = "10953";
-          // } else if (userSubmittedPriceRange === "$$ - $$$") {
-          //   var pricesRestaurants = "10955";
-          // } else if (userSubmittedPriceRange === "$$$$") {
-          //   var pricesRestaurants = "10954";
-          // } else {
-          //   var pricesRestaurants = "all"
-          // }
-
-          // //This will identify the key that correlates with the cuisine search result.
-          // function getKeyByCuisineValue(object, value) {
-          //   var x = Object.keys(object)
-          //   return x.find(function(key) {
-          //     return object[key].label.toLowerCase() === value.toLowerCase()
-          //   });
-          // }
-          // var userSubmittedCuisineSearch = document.getElementById("cuisine-selection").value;
-
-          // if (userSubmittedCuisineSearch === "") {
-          //   var cuisineSearchKey = "all";
-          // } else {
-          //   var cuisineSearchKey = getKeyByCuisineValue(cuisineNames, userSubmittedCuisineSearch);
-          // };
-
-          var restaurantFetchURL = restBaseURL + parameterLocationId + dateActivityLocation + and + parameterCurrency + currency + and + parameterUnit + lunit + and + parameterLimit + limit + and + parameterLang + lang + and + parameterRestAPIKey + restAPIKey + and + parameterMinRating + minRating + and + parameterRestPrice + pricesRestaurants + and + parameterCombinedFoodKey + cuisineSearchKey;
-
-          if (restSaveCheckbox.checked === false) {
-            reRestaurantFetch(restaurantFetchURL);
-          } else if (restSaveCheckbox.checked === true && dessertSaveChecbox.checked === true) {
-          } else if (restSaveCheckbox.checked === true && dessertSaveChecbox.checked === false) {
-            postSaveDessert();
-          }
-
-          function reRestaurantFetch(x) {
-            const data = null;
-            const xhr = new XMLHttpRequest();
-
-            xhr.open("GET", x, true);
-            xhr.addEventListener("readystatechange", restaurantCallFunction);
-
-            function restaurantCallFunction() {
-              if (this.readyState === this.DONE) {
-                var restaurantData = JSON.parse(this.responseText);
-                var restPage1Results = restaurantData.paging.results;
-                var restTotalResults = restaurantData.paging.total_results;
-                var restActualArrayResults = restaurantData.data.length;
-
-                if (restActualArrayResults == null || restActualArrayResults == undefined || restActualArrayResults === 0 || restActualArrayResults === "") {
-                  document.querySelector(".restaurant-div").style.display = "none";
-                  document.querySelector(".rest-error-page").style.display = "block";
-                  if (userSubmittedExtraChatTime === "None" && userSubmittedDate === "") {
-                    document.querySelector(".rightmost-container").style.gridTemplateColumns = "1fr 1fr";
-                    document.querySelector(".rightmost-container").style.display = "grid";
-                  } else if (userSubmittedExtraChatTime === "None" && userSubmittedDate != "") {
-                    document.querySelector(".rightmost-container").style.display = "grid";
-                    document.querySelector(".rightmost-container").style.gridTemplateColumns = "1fr 1fr 1fr";
-                  } else if (userSubmittedExtraChatTime != "None" && userSubmittedDate != "") {
-                    document.querySelector(".rightmost-container").style.display = "grid";
-                    document.querySelector(".rightmost-container").style.gridTemplateColumns = "1fr 1fr 1fr 1fr";
-                  } else if (userSubmittedExtraChatTime != "None" && userSubmittedDate === "") {
-                    document.querySelector(".rightmost-container").style.display = "grid";
-                    document.querySelector(".rightmost-container").style.gridTemplateColumns = "1fr 1fr 1fr";
-                  }
-                  restCloseBtn.addEventListener("click", closeRestErrorPage);
-
-                  function closeRestErrorPage() {
-                    document.querySelector(".restaurant-div").style.display = "";
-                    document.querySelector(".rest-error-page").style.display = "none";
-                    var reRunRestaurantFetchURL = restBaseURL + parameterLocationId + locationId + and + parameterCurrency + currency + and + parameterUnit + lunit + and + parameterLimit + limit + and + parameterLang + lang + and + parameterRestAPIKey + restAPIKey + and + parameterMinRating + minRating + and + parameterRestPrice + pricesRestaurants + and + parameterCombinedFoodKey + cuisineSearchKey;
-                    reRestaurantFetch(reRunRestaurantFetchURL);
-                  } //This is the end of the function closeRestErrorPage()
-                } else {
-                  document.querySelector(".restaurant-div").style.display = "";
-                  document.querySelector(".rest-error-page").style.display = "none";
-                  var firstPageRandomNumber = Math.round(Math.random() * (restActualArrayResults - 1));
-                  if (Object.keys(restaurantData.data[firstPageRandomNumber]).length < 30) {
-                    if (restaurantData.data[firstPageRandomNumber + 1] == null || restaurantData.data[firstPageRandomNumber + 1] == undefined) {
-                      firstPageRandomNumber = firstPageRandomNumber - 1;
-                    } else {
-                      firstPageRandomNumber = firstPageRandomNumber + 1;
-                    }
-                  };
-
-                  var restName = restaurantData.data[firstPageRandomNumber].name;
-                  document.querySelector(".rest-title").innerHTML = restName;
-
-                  if (restaurantData.data[firstPageRandomNumber].photo == null || restaurantData.data[firstPageRandomNumber].photo == undefined || restaurantData.data[firstPageRandomNumber].photo === "") {
-                    document.querySelector(".rest-pic").style.display = "none";
-                    document.querySelector(".rest-pic-error").style.display = "flex";
-                  } else {
-                    var restPhoto = restaurantData.data[firstPageRandomNumber].photo.images.large.url;
-                    document.querySelector(".rest-pic").setAttribute("src", restPhoto);
-                    document.querySelector(".rest-pic").style.display = "";
-                    document.querySelector(".rest-pic-error").style.display = "none"
-                  }
-
-                  var restWebsite = restaurantData.data[firstPageRandomNumber].website;
-                  if (restWebsite === "" || restWebsite == null || restWebsite == undefined) {
-                    document.querySelector(".rest-links-paragraph").innerHTML = "<a href='' target='_blank' class='rest-reviews'>TripAdvisor reviews</a>"
-                  } else {
-                    document.querySelector(".rest-links-paragraph").innerHTML = "<a href='' target='_blank' class='rest-link'>Website</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href='' target='_blank' class='rest-reviews'>TripAdvisor reviews</a>"
-                    document.querySelector(".rest-link").setAttribute("href", restWebsite);
-                  };
-                  var restTripAdvisor = restaurantData.data[firstPageRandomNumber].web_url;
-                  document.querySelector(".rest-reviews").setAttribute("href", restTripAdvisor);
-
-                  var restPhone = restaurantData.data[firstPageRandomNumber].phone;
-                  if (restPhone === "" || restPhone == null || restPhone == undefined) {
-                    document.querySelector(".rest-phone").style.display = "none";
-                  } else {
-                    document.querySelector(".rest-phone").style.display = "";
-                    document.querySelector(".rest-phone").innerHTML = restPhone;
-                  };
-
-                  // ADDRESS EDITS:
-                  var restStreet1 = restaurantData.data[firstPageRandomNumber].address_obj.street1;
-                  var restCity = restaurantData.data[firstPageRandomNumber].address_obj.city;
-                  var restState = restaurantData.data[firstPageRandomNumber].address_obj.state;
-
-                  if (restStreet1 == null || restStreet1 == undefined || restStreet1 === "") {
-                    document.querySelector(".rest-street-1").style.display = "none";
-                  } else {
-                    document.querySelector(".rest-street-1").style.display = "";
-                    document.querySelector(".rest-street-1").innerHTML = restStreet1;
-                  }
-
-                  if (restaurantData.data[firstPageRandomNumber].address_obj.postalcode == null || restaurantData.data[firstPageRandomNumber].address_obj.postalcode == undefined || restaurantData.data[firstPageRandomNumber].address_obj.postalcode === "") {
-                    document.querySelector(".rest-city").innerHTML = restCity + ", " + restState;
-                  } else {
-                    let restZip = (restaurantData.data[firstPageRandomNumber].address_obj.postalcode);
-                    let restZipCut = restZip.split("-")[0];
-                    document.querySelector(".rest-city").innerHTML = restCity + ", " + restState + " " + restZipCut;
-                  };
-
-                  //OTHER REST EDITS:
-                  var restRating = restaurantData.data[firstPageRandomNumber].rating;
-                  document.querySelector(".rdg4").innerHTML = restRating;
-
-                  var restPrice = restaurantData.data[firstPageRandomNumber].price_level;
-
-                  if (restPrice === "$$ - $$$") {
-                    document.querySelector(".rdg2").innerHTML = "$$-$$$";
-                  } else {
-                    document.querySelector(".rdg2").innerHTML = restPrice;
-                  }
-
-                  var restDescription = restaurantData.data[firstPageRandomNumber].description;
-                  document.querySelector(".restaurant-description-paragraph").innerHTML = restDescription;
-
-                  //FIGURING OUT THE LOCATION OF THE RESTAURANT TO INPUT INTO THE DESSERT FUNCTION:
-                  //7102352=Midwest and 15565668=Tenderloin and 15565677=Downtown Manhattan
-
-                  // var restaurantNeighborhoodInfoArray = restaurantData.data[firstPageRandomNumber].neighborhood_info;
-
-                  // function findTheRestRightLocation(x) {
-                  //   if (x.location_id != "60763" && x.location_id != "15565668" && x.location_id != "7102352" && x.location_id != "15565677") {
-                  //     return true;
-                  //   }
-                  // };
-
-                  // function findTheSecondRestRightLocation(x) {
-                  //   if (x.location_id != "60763") {
-                  //     return true;
-                  //   }
-                  // };
-
-                  // if (restaurantNeighborhoodInfoArray == null) {
-                  //   var restLocation = "60763";
-                  // } else if (dessertWalkDistance.checked === false) {
-                  //   var restLocation = "60763";
-                  // } else if (dessertWalkDistance.checked === true) {
-                  //   if (restaurantNeighborhoodInfoArray.findIndex(findTheRestRightLocation) === -1) {
-                  //     var restLocation = restaurantData.data[firstPageRandomNumber].neighborhood_info[restaurantNeighborhoodInfoArray.findIndex(findTheSecondRestRightLocation)].location_id;
-                  //   } else {
-                  //     var restLocation = restaurantData.data[firstPageRandomNumber].neighborhood_info[restaurantNeighborhoodInfoArray.findIndex(findTheRestRightLocation)].location_id;
-                  //   }
-                  // } else {
-                  //   var restLocation = restaurantData.data[firstPageRandomNumber].neighborhood_info[0].location_id;
-                  // }
-
-                  // restLocationArray.push(restLocation);
-
-                  //THIS IS THE DESSERT/TEA/COFFEE DIV:
-                  if (userSubmittedExtraChatTime != "None" && dessertSaveCheckbox.checked === false) {
-                    return extraChatTime();
-                  } else if (userSubmittedExtraChatTime != "None" && dessertSaveCheckbox.checked === true) {
-                    console.log("No dessert API function needs to run.");
-                  } else if (userSubmittedExtraChatTime === "None" && dessertSaveCheckbox.checked === true) {
-                    console.log("No dessert API function needs to run.");
-                  } else if (userSubmittedExtraChatTime === "None" && dessertSaveCheckbox.checked === false) {
-                    console.log("No dessert API function needs to run.");
-                  }
-
-                  function extraChatTime() {
-                    // This identifies the key for the rest-tag-category parameter based on the user submitted item.
-                    //This will also hide the extra chat time div if the user submitted "none".
-                    var userSubmittedExtraChatTime = document.getElementById("extra-chat-time").value;
-                    //This is what the user submitted as the date for the weather function.
-                    var userSubmittedDate = dateControl.value;
-
-                    if (userSubmittedExtraChatTime === "Bars & Pubs") {
-                      var restTagCategory = "11776";
-                    } else if (userSubmittedExtraChatTime === "Coffee & Tea") {
-                      var restTagCategory = "9900";
-                    } else if (userSubmittedExtraChatTime === "Dessert") {
-                      var restTagCategory = "9909,9901";
-                    } else if (userSubmittedExtraChatTime === "Any") {
-                      var restTagCategory = "11776,9900,9909,9901";
-                    }
-
-                    var dessertFetchURL = restBaseURL + parameterLocationId + restLocation + and + parameterCurrency + currency + and + parameterUnit + lunit + and + parameterLimit + limit + and + parameterLang + lang + and + parameterRestAPIKey + restAPIKey + and + parameterMinRating + minRating + and + parameterRestPrice + pricesRestaurants + and + parameterRestTag + restTagCategory;
-
-                    reDessertFetch(dessertFetchURL);
-
-                    function reDessertFetch(x) {
-
-                      const data = null;
-                      const xhr = new XMLHttpRequest();
-
-                      xhr.open("GET", x, true);
-                      xhr.addEventListener("readystatechange", dessertCallFunction);
-
-                      function dessertCallFunction() {
-                        if (this.readyState === this.DONE) {
-                          var dessertData = JSON.parse(this.responseText);
-                          var dessertPage1Results = dessertData.paging.results;
-                          var dessertTotalResults = dessertData.paging.total_results;
-                          var dessertActualArrayResults = dessertData.data.length;
-
-                          if (dessertActualArrayResults == null || dessertActualArrayResults == undefined || dessertActualArrayResults === 0 || dessertActualArrayResults === "") {
-                            document.querySelector(".dessert-div").style.display = "none";
-                            document.querySelector(".dessert-error-page").style.display = "block";
-                            dessertCloseBtn.addEventListener("click", closeDessertErrorPage);
-
-                            function closeDessertErrorPage() {
-                              document.querySelector(".dessert-error-page").style.display = "none";
-                              document.querySelector(".dessert-div").style.display = "";
-                              var reRunDessertFetchURL = restBaseURL + parameterLocationId + "60763" + and + parameterCurrency + currency + and + parameterUnit + lunit + and + parameterLimit + limit + and + parameterLang + lang + and + parameterRestAPIKey + restAPIKey + and + parameterMinRating + minRating + and + parameterRestPrice + pricesRestaurants + and + parameterRestTag + restTagCategory;
-                              reDessertFetch(reRunDessertFetchURL);
-                            } //This is the end of the closeDessertErrorPage() function
-                          } else {
-                            document.querySelector(".dessert-div").style.display = "";
-                            document.querySelector(".dessert-error-page").style.display = "none";
-                            var dessertFirstPageRandomNumber = Math.round(Math.random() * (dessertActualArrayResults - 1));
-                            if (Object.keys(dessertData.data[dessertFirstPageRandomNumber]).length < 30) {
-                              if (dessertData.data[dessertFirstPageRandomNumber + 1] == null || dessertData.data[dessertFirstPageRandomNumber + 1] == undefined) {
-                                dessertFirstPageRandomNumber = dessertFirstPageRandomNumber - 1;
-                              } else {
-                                dessertFirstPageRandomNumber = dessertFirstPageRandomNumber + 1;
-                              }
-                            };
-
-                            var dessertName = dessertData.data[dessertFirstPageRandomNumber].name;
-                            document.querySelector(".dessert-title").innerHTML = dessertName;
-
-                            if (dessertData.data[dessertFirstPageRandomNumber].photo == null || dessertData.data[dessertFirstPageRandomNumber].photo == undefined || dessertData.data[dessertFirstPageRandomNumber].photo === "") {
-                              document.querySelector(".dessert-pic").style.display = "none";
-                              document.querySelector(".dessert-pic-error").style.display = "flex";
-                            } else {
-                              var dessertPhoto = dessertData.data[dessertFirstPageRandomNumber].photo.images.large.url;
-                              document.querySelector(".dessert-pic").setAttribute("src", dessertPhoto);
-                              document.querySelector(".dessert-pic").style.display = "";
-                              document.querySelector(".dessert-pic-error").style.display = "none"
-                            }
-
-                            var dessertWebsite = dessertData.data[dessertFirstPageRandomNumber].website;
-                            if (dessertWebsite === "" || dessertWebsite == null || dessertWebsite == undefined) {
-                              document.querySelector(".dessert-links").innerHTML = "<a href='' target='_blank' class='dessert-reviews'>TripAdvisor reviews</a>"
-                            } else {
-                              document.querySelector(".dessert-links").innerHTML = "<a href='' target='_blank' class='dessert-link'>Website</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href='' target='_blank' class='dessert-reviews'>TripAdvisor reviews</a>"
-                              document.querySelector(".dessert-link").setAttribute("href", dessertWebsite);
-                            };
-                            var dessertTripAdvisor = dessertData.data[dessertFirstPageRandomNumber].web_url;
-                            document.querySelector(".dessert-reviews").setAttribute("href", dessertTripAdvisor);
-
-                            var dessertPhone = dessertData.data[dessertFirstPageRandomNumber].phone;
-                            if (dessertPhone === "" || dessertPhone == null || dessertPhone == undefined) {
-                              document.querySelector(".dessert-phone").style.display = "none";
-                            } else {
-                              document.querySelector(".dessert-phone").style.display = "";
-                              document.querySelector(".dessert-phone").innerHTML = dessertPhone;
-                            }
-
-                            // ADDRESS EDITS:
-                            var dessertStreet1 = dessertData.data[dessertFirstPageRandomNumber].address_obj.street1;
-                            var dessertCity = dessertData.data[dessertFirstPageRandomNumber].address_obj.city;
-                            var dessertState = dessertData.data[dessertFirstPageRandomNumber].address_obj.state;
-                            if (dessertStreet1 == null || dessertStreet1 == undefined || dessertStreet1 === "") {
-                              document.querySelector(".dessert-street-1").style.display = "none";
-                            } else {
-                              document.querySelector(".dessert-street-1").style.display = "";
-                              document.querySelector(".dessert-street-1").innerHTML = dessertStreet1;
-                            }
-
-                            if (dessertData.data[dessertFirstPageRandomNumber].address_obj.postalcode == null || dessertData.data[dessertFirstPageRandomNumber].address_obj.postalcode == undefined || dessertData.data[dessertFirstPageRandomNumber].address_obj.postalcode === "") {
-                              document.querySelector(".dessert-city").innerHTML = dessertCity + ", " + dessertState;
-                            } else {
-                              let dessertZip = (dessertData.data[dessertFirstPageRandomNumber].address_obj.postalcode);
-                              let dessertZipCut = dessertZip.split("-")[0];
-                              document.querySelector(".dessert-city").innerHTML = dessertCity + ", " + dessertState + " " + dessertZipCut;
-                            };
-
-                            //OTHER REST EDITS:
-                            var dessertRating = dessertData.data[dessertFirstPageRandomNumber].rating;
-                            document.querySelector(".ddg4").innerHTML = dessertRating;
-
-                            var dessertPrice = dessertData.data[dessertFirstPageRandomNumber].price_level;
-
-                            if (dessertPrice === "$$ - $$$") {
-                              document.querySelector(".ddg2").innerHTML = "$$-$$$";
-                            } else {
-                              document.querySelector(".ddg2").innerHTML = dessertPrice;
-                            }
-
-                            var dessertDescription = dessertData.data[dessertFirstPageRandomNumber].description;
-                            document.querySelector(".dessert-description-paragraph").innerHTML = dessertDescription;
-
-                          }; //This is the end of the if else statement to identify whether the first search results for dessert return nothing.
-                        }; //End of the xhr if statement which determines ready state for the dessertCallFunction.
-                      }; //End of the xhr call function dessertCallFunction().
-
-                      xhr.send(); //This is the xhr.send() for the dessertCallFunction();
-
-                    }; //This is the end of the function reDessertFetch(x).
-
-                  }; //This is the end of the extraChatTime() function.
-
-                }; //this is the end of the if else statement to identify whether the first search results for restaurants return nothing
-
-              }; //End of the if statement which determines ready state for restaurantCallFunction().
-
-            }; //End of the xhr load function for restaurantCallFunction().
-            xhr.send(); //To send the data from the xhr load function for restaurantCallFunction().
-          }; // This is the end of the function reRestaurantFetch(x).
-
-        }; //This is the end of the function noFaceDemandsFood().
-
-  }; //This is the end of the dateHappily() function.
-
-} //This is the end of the callEverything() function.
-
-
-// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-// POST-SAVE DUPLICATE FUNCTIONS:
-// SECONDARY RESTAURANT FUNCTION:
-
-function postSaveRestaurant() {
-  //Setting up all the fetch URL variables:
-  var restBaseURL = process.env.RESTBASEURL;
-  var parameterLocationId = "location_id=";
-
-  var parameterCurrency = "currency=";
-  var currency = "USD";
-
-  var parameterUnit = "lunit="
-  var lunit = "mi";
-
-  var parameterLimit = "limit=";
-  var limit = "30"
-
-  var parameterLang = "lang=";
-  var lang = "en_US";
-
-  var parameterRestAPIKey = "rapidapi-key="
-  var restAPIKey = process.env.RESTAPIKEY;
-
-  var parameterMinRating = "min_rating="
-  var minRating = "4";
-
-  var parameterRestPrice = "prices_restaurants="
-  var parameterCombinedFoodKey = "combined_food="
-  var parameterRestTag = "restaurant_tagcategory="
-
-  var and = "&"
-
-  //This will identify the key for the price-range submitted by the user.
-  var priceRange = document.getElementById("price-range")
-  var userSubmittedPriceRange = priceRange.value;
-  if (userSubmittedPriceRange === "$") {
-    var pricesRestaurants = "10953";
-  } else if (userSubmittedPriceRange === "$$ - $$$") {
-    var pricesRestaurants = "10955";
-  } else if (userSubmittedPriceRange === "$$$$") {
-    var pricesRestaurants = "10954";
-  } else {
-    var pricesRestaurants = "all"
-  }
-
-  //This will identify the key that correlates with the cuisine search result.
-  function getKeyByCuisineValue(object, value) {
-    var x = Object.keys(object)
-    return x.find(function(key) {
-      return object[key].label.toLowerCase() === value.toLowerCase()
-    });
-  }
-  var userSubmittedCuisineSearch = document.getElementById("cuisine-selection").value;
-
-  if (userSubmittedCuisineSearch === "") {
-    var cuisineSearchKey = "all";
-  } else {
-    var cuisineSearchKey = getKeyByCuisineValue(cuisineNames, userSubmittedCuisineSearch);
-  };
-
-  //This will identify the location id to use based on whether the restWalk checkbox is checked or not:
-  if (restWalkDistance.checked === true) {
-    var restParameterLocationId = dateActivityLocationArray[dateActivityLocationArray.length - 1];
-  } else {
-    var restParameterLocationId = "60763";
-  }
-
-  var restaurantFetchURL = restBaseURL + parameterLocationId + restParameterLocationId + and + parameterCurrency + currency + and + parameterUnit + lunit + and + parameterLimit + limit + and + parameterLang + lang + and + parameterRestAPIKey + restAPIKey + and + parameterMinRating + minRating + and + parameterRestPrice + pricesRestaurants + and + parameterCombinedFoodKey + cuisineSearchKey;
-
-  reRestaurantFetch(restaurantFetchURL);
-
-  function reRestaurantFetch(x) {
-    const data = null;
-    const xhr = new XMLHttpRequest();
-
-    xhr.open("GET", x, true);
-    xhr.addEventListener("readystatechange", restaurantCallFunction);
-
-    function restaurantCallFunction() {
-      if (this.readyState === this.DONE) {
-        var restaurantData = JSON.parse(this.responseText);
-        var restPage1Results = restaurantData.paging.results;
-        var restTotalResults = restaurantData.paging.total_results;
-        var restActualArrayResults = restaurantData.data.length;
-
-        if (restActualArrayResults == null || restActualArrayResults == undefined || restActualArrayResults === 0 || restActualArrayResults === "") {
-          document.querySelector(".restaurant-div").style.display = "none";
-          document.querySelector(".rest-error-page").style.display = "block";
-          if (userSubmittedExtraChatTime === "None" && userSubmittedDate === "") {
-            document.querySelector(".rightmost-container").style.gridTemplateColumns = "1fr 1fr";
-            document.querySelector(".rightmost-container").style.display = "grid";
-          } else if (userSubmittedExtraChatTime === "None" && userSubmittedDate != "") {
-            document.querySelector(".rightmost-container").style.display = "grid";
-            document.querySelector(".rightmost-container").style.gridTemplateColumns = "1fr 1fr 1fr";
-          } else if (userSubmittedExtraChatTime != "None" && userSubmittedDate != "") {
-            document.querySelector(".rightmost-container").style.display = "grid";
-            document.querySelector(".rightmost-container").style.gridTemplateColumns = "1fr 1fr 1fr 1fr";
-          } else if (userSubmittedExtraChatTime != "None" && userSubmittedDate === "") {
-            document.querySelector(".rightmost-container").style.display = "grid";
-            document.querySelector(".rightmost-container").style.gridTemplateColumns = "1fr 1fr 1fr";
-          }
-          restCloseBtn.addEventListener("click", closeRestErrorPage);
-
-          function closeRestErrorPage() {
-            document.querySelector(".restaurant-div").style.display = "";
-            document.querySelector(".rest-error-page").style.display = "none";
-            var reRunRestaurantFetchURL = restBaseURL + parameterLocationId + locationId + and + parameterCurrency + currency + and + parameterUnit + lunit + and + parameterLimit + limit + and + parameterLang + lang + and + parameterRestAPIKey + restAPIKey + and + parameterMinRating + minRating + and + parameterRestPrice + pricesRestaurants + and + parameterCombinedFoodKey + cuisineSearchKey;
-            reRestaurantFetch(reRunRestaurantFetchURL);
-          } //This is the end of the function closeRestErrorPage()
-        } else {
-          document.querySelector(".restaurant-div").style.display = "";
-          document.querySelector(".rest-error-page").style.display = "none";
-          var firstPageRandomNumber = Math.round(Math.random() * (restActualArrayResults - 1));
-          if (Object.keys(restaurantData.data[firstPageRandomNumber]).length < 30) {
-            if (restaurantData.data[firstPageRandomNumber + 1] == null || restaurantData.data[firstPageRandomNumber + 1] == undefined) {
-              firstPageRandomNumber = firstPageRandomNumber - 1;
-            } else {
-              firstPageRandomNumber = firstPageRandomNumber + 1;
-            }
-          };
-
-          var restName = restaurantData.data[firstPageRandomNumber].name;
-          document.querySelector(".rest-title").innerHTML = restName;
-
-          if (restaurantData.data[firstPageRandomNumber].photo == null || restaurantData.data[firstPageRandomNumber].photo == undefined || restaurantData.data[firstPageRandomNumber].photo === "") {
-            document.querySelector(".rest-pic").style.display = "none";
-            document.querySelector(".rest-pic-error").style.display = "flex";
-          } else {
-            var restPhoto = restaurantData.data[firstPageRandomNumber].photo.images.large.url;
-            document.querySelector(".rest-pic").setAttribute("src", restPhoto);
-            document.querySelector(".rest-pic").style.display = "";
-            document.querySelector(".rest-pic-error").style.display = "none"
-          }
-
-          var restWebsite = restaurantData.data[firstPageRandomNumber].website;
-          if (restWebsite === "" || restWebsite == null || restWebsite == undefined) {
-            document.querySelector(".rest-links-paragraph").innerHTML = "<a href='' target='_blank' class='rest-reviews'>TripAdvisor reviews</a>"
-          } else {
-            document.querySelector(".rest-links-paragraph").innerHTML = "<a href='' target='_blank' class='rest-link'>Website</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href='' target='_blank' class='rest-reviews'>TripAdvisor reviews</a>"
-            document.querySelector(".rest-link").setAttribute("href", restWebsite);
-          };
-          var restTripAdvisor = restaurantData.data[firstPageRandomNumber].web_url;
-          document.querySelector(".rest-reviews").setAttribute("href", restTripAdvisor);
-
-          var restPhone = restaurantData.data[firstPageRandomNumber].phone;
-          if (restPhone === "" || restPhone == null || restPhone == undefined) {
-            document.querySelector(".rest-phone").style.display = "none";
-          } else {
-            document.querySelector(".rest-phone").style.display = "";
-            document.querySelector(".rest-phone").innerHTML = restPhone;
-          };
-
-          // ADDRESS EDITS:
-          var restStreet1 = restaurantData.data[firstPageRandomNumber].address_obj.street1;
-          var restCity = restaurantData.data[firstPageRandomNumber].address_obj.city;
-          var restState = restaurantData.data[firstPageRandomNumber].address_obj.state;
-
-          if (restStreet1 == null || restStreet1 == undefined || restStreet1 === "") {
-            document.querySelector(".rest-street-1").style.display = "none";
-          } else {
-            document.querySelector(".rest-street-1").style.display = "";
-            document.querySelector(".rest-street-1").innerHTML = restStreet1;
-          }
-
-          if (restaurantData.data[firstPageRandomNumber].address_obj.postalcode == null || restaurantData.data[firstPageRandomNumber].address_obj.postalcode == undefined || restaurantData.data[firstPageRandomNumber].address_obj.postalcode === "") {
-            document.querySelector(".rest-city").innerHTML = restCity + ", " + restState;
-          } else {
-            let restZip = (restaurantData.data[firstPageRandomNumber].address_obj.postalcode);
-            let restZipCut = restZip.split("-")[0];
-            document.querySelector(".rest-city").innerHTML = restCity + ", " + restState + " " + restZipCut;
-          };
-
-          //OTHER REST EDITS:
-          var restRating = restaurantData.data[firstPageRandomNumber].rating;
-          document.querySelector(".rdg4").innerHTML = restRating;
-
-          var restPrice = restaurantData.data[firstPageRandomNumber].price_level;
-
-          if (restPrice === "$$ - $$$") {
-            document.querySelector(".rdg2").innerHTML = "$$-$$$";
-          } else {
-            document.querySelector(".rdg2").innerHTML = restPrice;
-          }
-
-          var restDescription = restaurantData.data[firstPageRandomNumber].description;
-          document.querySelector(".restaurant-description-paragraph").innerHTML = restDescription;
-
-          //FIGURING OUT THE LOCATION OF THE RESTAURANT TO INPUT INTO THE DESSERT FUNCTION:
-          //7102352=Midwest and 15565668=Tenderloin and 15565677=Downtown Manhattan
-
-          var restaurantNeighborhoodInfoArray = restaurantData.data[firstPageRandomNumber].neighborhood_info;
-
-          function findTheRestRightLocation(x) {
-            if (x.location_id != "60763" && x.location_id != "15565668" && x.location_id != "7102352" && x.location_id != "15565677") {
-              return true;
-            }
-          };
-
-          function findTheSecondRestRightLocation(x) {
-            if (x.location_id != "60763") {
-              return true;
-            }
-          };
-
-          if (restaurantNeighborhoodInfoArray == null) {
-            var restLocation = "60763";
-          } else if (dessertWalkDistance.checked === false) {
-            var restLocation = "60763";
-          } else if (dessertWalkDistance.checked === true) {
-            if (restaurantNeighborhoodInfoArray.findIndex(findTheRestRightLocation) === -1) {
-              var restLocation = restaurantData.data[firstPageRandomNumber].neighborhood_info[restaurantNeighborhoodInfoArray.findIndex(findTheSecondRestRightLocation)].location_id;
-            } else {
-              var restLocation = restaurantData.data[firstPageRandomNumber].neighborhood_info[restaurantNeighborhoodInfoArray.findIndex(findTheRestRightLocation)].location_id;
-            }
-          } else {
-            var restLocation = restaurantData.data[firstPageRandomNumber].neighborhood_info[0].location_id;
-          }
-
-          restLocationArray.push(restLocation);
-        }; //this is the end of the if else statement to identify whether the first search results for restaurants return nothing
-      }; //End of the if statement which determines ready state for the restaurantCallFunction.
-    }; //This is the end of the xhr onload for restaurantCallFunction within the postSaveRestaurant function.
-    xhr.send();
-  }; // This is the end of the function reRestaurantFetch(x).
-
-}; //This is the end of the postSaveRestaurant() function.
-
-
-// SECONDARY DESSERT FUNCTION:
-function postSaveDessert(){
-  var userSubmittedExtraChatTime = document.getElementById("extra-chat-time").value;
-  if (userSubmittedExtraChatTime != "None" && dessertSaveCheckbox.checked === false) {
-    return extraChatTime();
-  } else if (userSubmittedExtraChatTime != "None" && dessertSaveCheckbox.checked === true) {
-    console.log("No dessert API function needs to run.");
-  } else if (userSubmittedExtraChatTime === "None" && dessertSaveCheckbox.checked === true) {
-    console.log("No dessert API function needs to run.");
-  } else if (userSubmittedExtraChatTime === "None" && dessertSaveCheckbox.checked === false) {
-    console.log("No dessert API function needs to run.");
-  }
-
-  function extraChatTime() {
-
-    var restBaseURL = process.env.RESTBASEURL;
-    var parameterLocationId = "location_id=";
-
-    var parameterCurrency = "currency=";
-    var currency = "USD";
-
-    var parameterUnit = "lunit="
-    var lunit = "mi";
-
-    var parameterLimit = "limit=";
-    var limit = "30"
-
-    var parameterLang = "lang=";
-    var lang = "en_US";
-
-    var parameterRestAPIKey = "rapidapi-key="
-    var restAPIKey = process.env.RESTAPIKEY;
-
-    var parameterMinRating = "min_rating="
-    var minRating = "4";
-
-    var parameterRestPrice = "prices_restaurants="
-    var parameterCombinedFoodKey = "combined_food="
-    var parameterRestTag = "restaurant_tagcategory="
-
-    var and = "&"
-
-    //This will identify the key for the price-range submitted by the user.
-    var priceRange = document.getElementById("price-range")
-    var userSubmittedPriceRange = priceRange.value;
-    if (userSubmittedPriceRange === "$") {
-      var pricesRestaurants = "10953";
-    } else if (userSubmittedPriceRange === "$$ - $$$") {
-      var pricesRestaurants = "10955";
-    } else if (userSubmittedPriceRange === "$$$$") {
-      var pricesRestaurants = "10954";
+    // THIS HANDLES THE FETCHED RESTAURANT INFO FROM BACK END AND PUTS IT INTO THE FRONT END:
+    if (restaurantData == null){
+      document.querySelector(".restaurant-div").style.display = "none";
+      document.querySelector(".rest-error-page").style.display = "block";
+      if (userSubmittedExtraChatTime === "None" && userSubmittedDate === "") {
+        document.querySelector(".rightmost-container").style.gridTemplateColumns = "1fr 1fr";
+        document.querySelector(".rightmost-container").style.display = "grid";
+      } else if (userSubmittedExtraChatTime === "None" && userSubmittedDate != "") {
+        document.querySelector(".rightmost-container").style.display = "grid";
+        document.querySelector(".rightmost-container").style.gridTemplateColumns = "1fr 1fr 1fr";
+      } else if (userSubmittedExtraChatTime != "None" && userSubmittedDate != "") {
+        document.querySelector(".rightmost-container").style.display = "grid";
+        document.querySelector(".rightmost-container").style.gridTemplateColumns = "1fr 1fr 1fr 1fr";
+      } else if (userSubmittedExtraChatTime != "None" && userSubmittedDate === "") {
+        document.querySelector(".rightmost-container").style.display = "grid";
+        document.querySelector(".rightmost-container").style.gridTemplateColumns = "1fr 1fr 1fr";
+      }
     } else {
-      var pricesRestaurants = "all"
+      document.querySelector(".restaurant-div").style.display = "";
+      document.querySelector(".rest-error-page").style.display = "none";
+    };
+
+    var restName = restaurantData.name;
+    document.querySelector(".rest-title").innerHTML = restName;
+
+    if (restaurantData.photo == null || restaurantData.photo == undefined || restaurantData.photo === "") {
+      document.querySelector(".rest-pic").style.display = "none";
+      document.querySelector(".rest-pic-error").style.display = "flex";
+    } else {
+      var restPhoto = restaurantData.photo.images.large.url;
+      document.querySelector(".rest-pic").setAttribute("src", restPhoto);
+      document.querySelector(".rest-pic").style.display = "";
+      document.querySelector(".rest-pic-error").style.display = "none"
     }
 
-    //This will identify the location needed for the fetch URL.
-    if(dessertWalkDistance.checked === true){
-      var restLocation = restLocationArray[restLocationArray.length-1];
-    } else {restLocation = "60763"}
+    var restWebsite = restaurantData.website;
+    if (restWebsite === "" || restWebsite == null || restWebsite == undefined) {
+      document.querySelector(".rest-links-paragraph").innerHTML = "<a href='' target='_blank' class='rest-reviews'>TripAdvisor reviews</a>"
+    } else {
+      document.querySelector(".rest-links-paragraph").innerHTML = "<a href='' target='_blank' class='rest-link'>Website</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href='' target='_blank' class='rest-reviews'>TripAdvisor reviews</a>"
+      document.querySelector(".rest-link").setAttribute("href", restWebsite);
+    };
+    var restTripAdvisor = restaurantData.web_url;
+    document.querySelector(".rest-reviews").setAttribute("href", restTripAdvisor);
 
-    // This identifies the key for the rest-tag-category parameter based on the user submitted item.
-    //This will also hide the extra chat time div if the user submitted "none".
-    var userSubmittedExtraChatTime = document.getElementById("extra-chat-time").value;
-    //This is what the user submitted as the date for the weather function.
-    var userSubmittedDate = dateControl.value;
+    var restPhone = restaurantData.phone;
+    if (restPhone === "" || restPhone == null || restPhone == undefined) {
+      document.querySelector(".rest-phone").style.display = "none";
+    } else {
+      document.querySelector(".rest-phone").style.display = "";
+      document.querySelector(".rest-phone").innerHTML = restPhone;
+    };
 
-    if (userSubmittedExtraChatTime === "Bars & Pubs") {
-      var restTagCategory = "11776";
-    } else if (userSubmittedExtraChatTime === "Coffee & Tea") {
-      var restTagCategory = "9900";
-    } else if (userSubmittedExtraChatTime === "Dessert") {
-      var restTagCategory = "9909,9901";
-    } else if (userSubmittedExtraChatTime === "Any") {
-      var restTagCategory = "11776,9900,9909,9901";
+    // ADDRESS EDITS:
+    var restStreet1 = restaurantData.ddress_obj.street1;
+    var restCity = restaurantData.address_obj.city;
+    var restState = restaurantData.address_obj.state;
+
+    if (restStreet1 == null || restStreet1 == undefined || restStreet1 === "") {
+      document.querySelector(".rest-street-1").style.display = "none";
+    } else {
+      document.querySelector(".rest-street-1").style.display = "";
+      document.querySelector(".rest-street-1").innerHTML = restStreet1;
     }
 
-    var dessertFetchURL = restBaseURL + parameterLocationId + restLocation + and + parameterCurrency + currency + and + parameterUnit + lunit + and + parameterLimit + limit + and + parameterLang + lang + and + parameterRestAPIKey + restAPIKey + and + parameterMinRating + minRating + and + parameterRestPrice + pricesRestaurants + and + parameterRestTag + restTagCategory;
+    if (restaurantData.address_obj.postalcode == null || restaurantData.address_obj.postalcode == undefined || restaurantData.address_obj.postalcode === "") {
+      document.querySelector(".rest-city").innerHTML = restCity + ", " + restState;
+    } else {
+      let restZip = (restaurantData.address_obj.postalcode);
+      let restZipCut = restZip.split("-")[0];
+      document.querySelector(".rest-city").innerHTML = restCity + ", " + restState + " " + restZipCut;
+    };
 
-    reDessertFetch(dessertFetchURL);
+    //OTHER REST EDITS:
+    var restRating = restaurantData.rating;
+    document.querySelector(".rdg4").innerHTML = restRating;
 
-    function reDessertFetch(x){
-      const data = null;
-      const xhr = new XMLHttpRequest();
+    var restPrice = restaurantData.price_level;
 
-      xhr.open("GET", x, true);
-      xhr.addEventListener("readystatechange", dessertCallFunction);
+    if (restPrice === "$$ - $$$") {
+      document.querySelector(".rdg2").innerHTML = "$$-$$$";
+    } else {
+      document.querySelector(".rdg2").innerHTML = restPrice;
+    }
 
-      function dessertCallFunction(){
-        if(this.readyState === this.DONE){
-          var dessertData = JSON.parse(this.responseText);
-          var dessertPage1Results = dessertData.paging.results;
-          var dessertTotalResults = dessertData.paging.total_results;
-          var dessertActualArrayResults = dessertData.data.length;
-
-          if (dessertActualArrayResults == null || dessertActualArrayResults == undefined || dessertActualArrayResults === 0 || dessertActualArrayResults === "") {
-            document.querySelector(".dessert-div").style.display = "none";
-            document.querySelector(".dessert-error-page").style.display = "block";
-            dessertCloseBtn.addEventListener("click", closeDessertErrorPage);
-
-            function closeDessertErrorPage() {
-              document.querySelector(".dessert-error-page").style.display = "none";
-              document.querySelector(".dessert-div").style.display = "";
-              var reRunDessertFetchURL = restBaseURL + parameterLocationId + "60763" + and + parameterCurrency + currency + and + parameterUnit + lunit + and + parameterLimit + limit + and + parameterLang + lang + and + parameterRestAPIKey + restAPIKey + and + parameterMinRating + minRating + and + parameterRestPrice + pricesRestaurants + and + parameterRestTag + restTagCategory;
-              reDessertFetch(reRunDessertFetchURL);
-            } //This is the end of the closeDessertErrorPage() function
-          } else {
-            document.querySelector(".dessert-div").style.display = "";
-            document.querySelector(".dessert-error-page").style.display = "none";
-            var dessertFirstPageRandomNumber = Math.round(Math.random() * (dessertActualArrayResults - 1));
-            if (Object.keys(dessertData.data[dessertFirstPageRandomNumber]).length < 30) {
-              if (dessertData.data[dessertFirstPageRandomNumber + 1] == null || dessertData.data[dessertFirstPageRandomNumber + 1] == undefined) {
-                dessertFirstPageRandomNumber = dessertFirstPageRandomNumber - 1;
-              } else {
-                dessertFirstPageRandomNumber = dessertFirstPageRandomNumber + 1;
-              }
-            };
-
-            var dessertName = dessertData.data[dessertFirstPageRandomNumber].name;
-            document.querySelector(".dessert-title").innerHTML = dessertName;
-
-            if (dessertData.data[dessertFirstPageRandomNumber].photo == null || dessertData.data[dessertFirstPageRandomNumber].photo == undefined || dessertData.data[dessertFirstPageRandomNumber].photo === "") {
-              document.querySelector(".dessert-pic").style.display = "none";
-              document.querySelector(".dessert-pic-error").style.display = "flex";
-            } else {
-              var dessertPhoto = dessertData.data[dessertFirstPageRandomNumber].photo.images.large.url;
-              document.querySelector(".dessert-pic").setAttribute("src", dessertPhoto);
-              document.querySelector(".dessert-pic").style.display = "";
-              document.querySelector(".dessert-pic-error").style.display = "none"
-            }
-
-            var dessertWebsite = dessertData.data[dessertFirstPageRandomNumber].website;
-            if (dessertWebsite === "" || dessertWebsite == null || dessertWebsite == undefined) {
-              document.querySelector(".dessert-links").innerHTML = "<a href='' target='_blank' class='dessert-reviews'>TripAdvisor reviews</a>"
-            } else {
-              document.querySelector(".dessert-links").innerHTML = "<a href='' target='_blank' class='dessert-link'>Website</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href='' target='_blank' class='dessert-reviews'>TripAdvisor reviews</a>"
-              document.querySelector(".dessert-link").setAttribute("href", dessertWebsite);
-            };
-            var dessertTripAdvisor = dessertData.data[dessertFirstPageRandomNumber].web_url;
-            document.querySelector(".dessert-reviews").setAttribute("href", dessertTripAdvisor);
-
-            var dessertPhone = dessertData.data[dessertFirstPageRandomNumber].phone;
-            if (dessertPhone === "" || dessertPhone == null || dessertPhone == undefined) {
-              document.querySelector(".dessert-phone").style.display = "none";
-            } else {
-              document.querySelector(".dessert-phone").style.display = "";
-              document.querySelector(".dessert-phone").innerHTML = dessertPhone;
-            }
-
-            // ADDRESS EDITS:
-            var dessertStreet1 = dessertData.data[dessertFirstPageRandomNumber].address_obj.street1;
-            var dessertCity = dessertData.data[dessertFirstPageRandomNumber].address_obj.city;
-            var dessertState = dessertData.data[dessertFirstPageRandomNumber].address_obj.state;
-            if (dessertStreet1 == null || dessertStreet1 == undefined || dessertStreet1 === "") {
-              document.querySelector(".dessert-street-1").style.display = "none";
-            } else {
-              document.querySelector(".dessert-street-1").style.display = "";
-              document.querySelector(".dessert-street-1").innerHTML = dessertStreet1;
-            }
-
-            if (dessertData.data[dessertFirstPageRandomNumber].address_obj.postalcode == null || dessertData.data[dessertFirstPageRandomNumber].address_obj.postalcode == undefined || dessertData.data[dessertFirstPageRandomNumber].address_obj.postalcode === "") {
-              document.querySelector(".dessert-city").innerHTML = dessertCity + ", " + dessertState;
-            } else {
-              let dessertZip = (dessertData.data[dessertFirstPageRandomNumber].address_obj.postalcode);
-              let dessertZipCut = dessertZip.split("-")[0];
-              document.querySelector(".dessert-city").innerHTML = dessertCity + ", " + dessertState + " " + dessertZipCut;
-            };
-
-            //OTHER REST EDITS:
-            var dessertRating = dessertData.data[dessertFirstPageRandomNumber].rating;
-            document.querySelector(".ddg4").innerHTML = dessertRating;
-
-            var dessertPrice = dessertData.data[dessertFirstPageRandomNumber].price_level;
-
-            if (dessertPrice === "$$ - $$$") {
-              document.querySelector(".ddg2").innerHTML = "$$-$$$";
-            } else {
-              document.querySelector(".ddg2").innerHTML = dessertPrice;
-            }
-
-            var dessertDescription = dessertData.data[dessertFirstPageRandomNumber].description;
-            document.querySelector(".dessert-description-paragraph").innerHTML = dessertDescription;
-
-          }; //This is the end of the if else statement to identify whether the first search results for dessert return nothing.
-        }; //This is the end of the if statement which determines readystate for dessertCallFunction.
-        }; //This is the end of the xhr onload function for dessertCallFunction
-      xhr.send();
-    }; //This is the end of the function reDessertFetch(x).
-
-  }; //This is the end of the extraChatTime() function.
-}; //This is the end of the PostSaveDessert() function.
+    var restDescription = restaurantData.description;
+    document.querySelector(".restaurant-description-paragraph").innerHTML = restDescription;
 
 
+    // THIS HANDLES THE FETCHED DESSERT INFO FROM BACK END AND PUTS IT INTO THE FRONT END:
+    if(dessertData == null){
+      document.querySelector(".dessert-div").style.display = "none";
+      document.querySelector(".dessert-error-page").style.display = "block";
+    } else {
+      document.querySelector(".dessert-div").style.display = "";
+      document.querySelector(".dessert-error-page").style.display = "none";
+    }
 
+    var dessertName = dessertData.name;
+    document.querySelector(".dessert-title").innerHTML = dessertName;
 
+    if (dessertData.photo == null || dessertData.photo == undefined || dessertData.photo === "") {
+      document.querySelector(".dessert-pic").style.display = "none";
+      document.querySelector(".dessert-pic-error").style.display = "flex";
+    } else {
+      var dessertPhoto = dessertData.photo.images.large.url;
+      document.querySelector(".dessert-pic").setAttribute("src", dessertPhoto);
+      document.querySelector(".dessert-pic").style.display = "";
+      document.querySelector(".dessert-pic-error").style.display = "none"
+    }
 
+    var dessertWebsite = dessertData.website;
+    if (dessertWebsite === "" || dessertWebsite == null || dessertWebsite == undefined) {
+      document.querySelector(".dessert-links").innerHTML = "<a href='' target='_blank' class='dessert-reviews'>TripAdvisor reviews</a>"
+    } else {
+      document.querySelector(".dessert-links").innerHTML = "<a href='' target='_blank' class='dessert-link'>Website</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href='' target='_blank' class='dessert-reviews'>TripAdvisor reviews</a>"
+      document.querySelector(".dessert-link").setAttribute("href", dessertWebsite);
+    };
+    var dessertTripAdvisor = dessertData.web_url;
+    document.querySelector(".dessert-reviews").setAttribute("href", dessertTripAdvisor);
+
+    var dessertPhone = dessertData.phone;
+    if (dessertPhone === "" || dessertPhone == null || dessertPhone == undefined) {
+      document.querySelector(".dessert-phone").style.display = "none";
+    } else {
+      document.querySelector(".dessert-phone").style.display = "";
+      document.querySelector(".dessert-phone").innerHTML = dessertPhone;
+    }
+
+    // ADDRESS EDITS:
+    var dessertStreet1 = dessertData.address_obj.street1;
+    var dessertCity = dessertData.address_obj.city;
+    var dessertState = dessertData.address_obj.state;
+    if (dessertStreet1 == null || dessertStreet1 == undefined || dessertStreet1 === "") {
+      document.querySelector(".dessert-street-1").style.display = "none";
+    } else {
+      document.querySelector(".dessert-street-1").style.display = "";
+      document.querySelector(".dessert-street-1").innerHTML = dessertStreet1;
+    }
+
+    if (dessertData.address_obj.postalcode == null || dessertData.address_obj.postalcode == undefined || dessertData.address_obj.postalcode === "") {
+      document.querySelector(".dessert-city").innerHTML = dessertCity + ", " + dessertState;
+    } else {
+      let dessertZip = (dessertData.address_obj.postalcode);
+      let dessertZipCut = dessertZip.split("-")[0];
+      document.querySelector(".dessert-city").innerHTML = dessertCity + ", " + dessertState + " " + dessertZipCut;
+    };
+    
+    //OTHER REST EDITS:
+    var dessertRating = dessertData.rating;
+    document.querySelector(".ddg4").innerHTML = dessertRating;
+
+    var dessertPrice = dessertData.price_level;
+
+    if (dessertPrice === "$$ - $$$") {
+      document.querySelector(".ddg2").innerHTML = "$$-$$$";
+    } else {
+      document.querySelector(".ddg2").innerHTML = dessertPrice;
+    }
+
+    var dessertDescription = dessertData.description;
+    document.querySelector(".dessert-description-paragraph").innerHTML = dessertDescription;
+
+  } // End of the updateFrontendDisplay()
+} //This is the end of the callEverything() function.
 
 
 // Changing the min and max date selectable in the calendar input:
@@ -1339,6 +598,6 @@ function callTheWeather() {
     var averageHumidity = Math.round(matchedItem.main.humidity);
     document.querySelector(".avg-humidity-number").innerHTML = averageHumidity + "&#37;";
 
-  } //This closes the forecastWeatherCallFunction().
+  }; //This closes the forecastWeatherCallFunction().
 
 }; //This is the end of the entire function "callTheWeather"
