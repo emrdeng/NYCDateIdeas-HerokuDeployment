@@ -11,7 +11,7 @@ app.get("/", function (req, res){
   res.sendFile(__dirname + "/index.html");
 })
 
-app.get('/env-vars', (req, res) => {
+app.get('/cuisineList', (req, res) => {
   // Read the cuisineNames.json file
   fs.readFile(process.env.CUISINENAMESJSON, 'utf8', (err, data) => {
     if (err) {
@@ -39,6 +39,25 @@ app.get('/env-vars', (req, res) => {
   });
 });
 
+app.get('/current-weather', (req, res) => {
+  const unit = req.query.unit;
+  const weatherURL = unit === "Celsius" ? process.env.WEATHERURLCELSIUS : process.env.WEATHERURLFARENHEIT;
+
+  fetch(weatherURL)
+    .then(response => response.json())
+    .then(data => res.json(data))
+    .catch(error => res.status(500).json({ error: 'Failed to fetch current weather' }));
+});
+
+app.get('/forecast-weather', (req, res) => {
+  const unit = req.query.unit;
+  const weatherURL = unit === "Celsius" ? process.env.WEATHERFORECASTURLCELSIUS : process.env.WEATHERFORECASTURLFARENHEIT;
+
+  fetch(weatherURL)
+    .then(response => response.json())
+    .then(data => res.json(data))
+    .catch(error => res.status(500).json({ error: 'Failed to fetch forecast weather' }));
+});
 
 const PORT = process.env.PORT || 3000;
 

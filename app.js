@@ -1136,7 +1136,6 @@ function callTheWeather() {
   var measurementControl = document.getElementById("weather-unit").value;
   // This changes the Weather API URL depending on the measurement unit selected.
   let endpoint;
-  let measurement;
   let callbackFunction;
 
   if (userSubmittedDate === ""){
@@ -1145,16 +1144,14 @@ function callTheWeather() {
   } else if (formattedTodaysDate === userSubmittedDate) {
     document.querySelector(".weather-div").style.removeProperty("display");
     endpoint = "/current-weather";
-    measurement = measurementControl === "Celsius" ? "metric" : "imperial";
     callbackFunction = weatherCallFunction;
   } else {
     document.querySelector(".weather-div").style.removeProperty("display");
     endpoint = "/forecast-weather";
-    measurement = measurementControl === "Celsius" ? "metric" : "imperial";
     callbackFunction = forecastWeatherCallFunction;
   }
 
-  fetch(`${endpoint}&units=${measurement}`)
+  fetch(`${endpoint}?unit=${measurementControl}`)
     .then(response => response.json())
     .then(data => callbackFunction(data))
     .catch(error => console.error("Error fetching weather data:", error));
